@@ -1,0 +1,53 @@
+import 'package:e_commerce_app/core/views/widgets/api_result.dart';
+import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
+import 'package:e_commerce_app/features/auth/data/model/login_request_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/login_response_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/register_request_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/register_response_dto.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/login_request_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/login_response_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/register_response_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/repo/data_source/auth_data_source.dart';
+
+class AuthDataSourceImpl extends AuthDataSource {
+  final AuthApi _authApi;
+  AuthDataSourceImpl(this._authApi);
+
+  @override
+  Future<ApiResult<LoginResponseEntity>> login(
+    LoginRequestEntity loginRequestEntity,
+  ) async {
+    final result = await _authApi.login(
+      LoginRequestDto(
+        email: loginRequestEntity.email,
+        password: loginRequestEntity.password,
+      ),
+    );
+    switch (result) {
+      case ApiSuccess<LoginResponseDto>():
+        return ApiSuccess<LoginResponseEntity>(result.data?.toEntity());
+      case ApiError<LoginResponseDto>():
+        return ApiError<LoginResponseEntity>(result.message);
+    }
+  }
+
+  @override
+  Future<ApiResult<RegisterResponseEntity>> register(
+    RegisterRequestEntity registerRequestEntity,
+  ) async {
+    final result = await _authApi.register(
+      RegisterRequestDto(
+        email: registerRequestEntity.email,
+        password: registerRequestEntity.password,
+        name: registerRequestEntity.name,
+      ),
+    );
+    switch (result) {
+      case ApiSuccess<RegisterResponseDto>():
+        return ApiSuccess<RegisterResponseEntity>(result.data?.toEntity());
+      case ApiError<RegisterResponseDto>():
+        return ApiError<RegisterResponseEntity>(result.message);
+    }
+  }
+}
