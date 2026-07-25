@@ -14,12 +14,19 @@ import 'package:e_commerce_app/features/auth/presentation/view/pages/successful_
 import 'package:e_commerce_app/features/auth/presentation/view/pages/verify_code_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/pages/verify_email_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:e_commerce_app/features/home/data/model/product_model.dart';
+import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
+import 'package:e_commerce_app/features/home/presentation/view/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
+  await Hive.initFlutter();
   WidgetsFlutterBinding.ensureInitialized();
+  Hive.registerAdapter<ProductModel>(ProductModelAdapter());
+  await Hive.openBox<ProductModel>(AppConstants.productsBox);
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     publishableKey: AppConstants.publishableKey,
@@ -113,6 +120,11 @@ class MyApp extends StatelessWidget {
             case AppRoutes.appSection:
               return MaterialPageRoute(
                 builder: (context) => const AppSection(),
+              );
+            case AppRoutes.productDetails:
+              final product = settings.arguments as ProductsResponseEntity;
+              return MaterialPageRoute(
+                builder: (context) => ProductDetailsPage(product: product),
               );
             default:
               return null;

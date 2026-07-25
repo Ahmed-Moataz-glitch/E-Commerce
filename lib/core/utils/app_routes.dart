@@ -9,4 +9,5 @@ abstract class AppRoutes {
   static const String resetPassword = '/reset-password';
   static const String successfulResetPassword = '/successful-reset-password';
   static const String appSection = '/app-section';
+  static const String productDetails = '/product-details';
 }
