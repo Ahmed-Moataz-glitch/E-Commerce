@@ -1,0 +1,43 @@
+import 'dart:convert';
+
+import 'package:e_commerce_app/core/utils/app_api.dart';
+import 'package:e_commerce_app/features/home/data/model/categories_response_dto.dart';
+import 'package:http/http.dart' as http;
+import 'package:e_commerce_app/core/views/widgets/api_result.dart';
+import 'package:e_commerce_app/features/home/data/model/products_response_dto.dart';
+
+class HomeApi {
+  Future<ApiResult<List<ProductsResponseDto>>> getProducts() async {
+    final url = Uri.https(AppApi.baseUrl, AppApi.productsEndpoint);
+    try {
+      var response = await http.get(url);
+      if(response.statusCode != 200){
+        return ApiError<List<ProductsResponseDto>>('Failed to fetch products');
+      } else {
+        final responseBody = response.body;
+        final json = jsonDecode(responseBody);
+        final products = (json as List).map((json) => ProductsResponseDto.fromJson(json)).toList();
+        return ApiSuccess<List<ProductsResponseDto>>(products);
+      }
+    } catch (e) {
+      return ApiError<List<ProductsResponseDto>>(e.toString());
+    }
+  }
+
+  Future<ApiResult<List<CategoriesResponseDto>>> getCategories() async {
+    final url = Uri.https(AppApi.baseUrl, AppApi.categoriesEndpoint);
+    try {
+      var response = await http.get(url);
+      if(response.statusCode != 200){
+        return ApiError<List<CategoriesResponseDto>>('Failed to fetch categories');
+      } else {
+        final responseBody = response.body;
+        final json = jsonDecode(responseBody);
+        final categories = (json as List).map((json) => CategoriesResponseDto.fromJson(json)).toList();
+        return ApiSuccess<List<CategoriesResponseDto>>(categories);
+      }
+    } catch (e) {
+      return ApiError<List<CategoriesResponseDto>>(e.toString());
+    }
+  }
+}

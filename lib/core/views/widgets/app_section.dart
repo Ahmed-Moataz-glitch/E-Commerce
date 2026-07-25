@@ -68,38 +68,48 @@ class _AppSectionState extends State<AppSection> {
           //     ),
           //   ),
           // ),
-          AnimatedBottomNavigationBar.builder(
-            itemCount: tabs.length,
-            activeIndex: activeIndex,
-            onTap: (index) {
-              activeIndex = index;
-              setState(() {});
-            },
-            gapLocation: GapLocation.none,
-            elevation: 10,
-            backgroundColor: AppColors.background,
-            tabBuilder: (index, isActive) {
-              final color = isActive ? AppColors.black : AppColors.gray;
-              return SizedBox.expand(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(tabs[index].icon, color: color, size: 24.sp),
-                    SizedBox(height: 4.h),
-                    Text(
-                      tabs[index].label,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 14.sp,
-                        fontWeight: isActive
-                            ? FontWeight.w600
-                            : FontWeight.w400,
-                      ),
-                    ),
-                  ],
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: AppColors.primary,
+                  width: 0.8.r,
                 ),
-              );
-            },
+              ),
+            ),
+            child: AnimatedBottomNavigationBar.builder(
+              itemCount: tabs.length,
+              activeIndex: activeIndex,
+              onTap: (index) {
+                activeIndex = index;
+                setState(() {});
+              },
+              gapLocation: GapLocation.none,
+              elevation: 10,
+              backgroundColor: AppColors.background,
+              tabBuilder: (index, isActive) {
+                final color = isActive ? AppColors.black : AppColors.gray;
+                return SizedBox.expand(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(tabs[index].icon, color: color, size: 24.sp),
+                      SizedBox(height: 4.h),
+                      Text(
+                        tabs[index].label,
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 14.sp,
+                          fontWeight: isActive
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
     );
   }

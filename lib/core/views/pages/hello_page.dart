@@ -40,7 +40,7 @@ class HelloPage extends StatelessWidget {
             SizedBox(height: size.height * 0.02),
             SecondaryButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.register);
+                Navigator.pushReplacementNamed(context, AppRoutes.login);
               },
               text: 'Login',
             ),

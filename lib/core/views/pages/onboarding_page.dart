@@ -5,7 +5,6 @@ import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/views/widgets/main_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -45,10 +44,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     index: index,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.r),
-                      child: SvgPicture.asset(
+                      child: Image.asset(
                         onboardingList[index].imagePath,
-                        width: size.width,
-                        height: 100.h,
                         fit: BoxFit.cover,
                       ),
                     ),
