@@ -16,6 +16,7 @@ import 'package:e_commerce_app/features/auth/presentation/view/pages/successful_
 import 'package:e_commerce_app/features/auth/presentation/view/pages/verify_code_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/pages/verify_email_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
 import 'package:e_commerce_app/features/home/presentation/view/pages/product_details_page.dart';
@@ -29,8 +30,9 @@ void main() async {
   await Hive.initFlutter();
   WidgetsFlutterBinding.ensureInitialized();
   Hive.registerAdapter<ProductModel>(ProductModelAdapter());
+  Hive.registerAdapter<CartItemModel>(CartItemModelAdapter());
   await Hive.openBox<ProductModel>(AppConstants.favoritesBox);
-  await Hive.openBox<ProductModel>(AppConstants.cartBox);
+  await Hive.openBox<CartItemModel>(AppConstants.cartBox);
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     publishableKey: AppConstants.publishableKey,

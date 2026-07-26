@@ -5,4 +5,5 @@ abstract class AppConstants {
       'sb_publishable_gnP5LbCW4Hs9sEgDn0XLiA_EYm1Bmt5';
   static const String favoritesBox = 'favorites_box';
   static const String cartBox = 'cart_box';
+  static const String shippingFee = '50';
 }

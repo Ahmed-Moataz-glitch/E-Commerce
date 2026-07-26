@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_dialogs.dart';
 import 'package:e_commerce_app/core/views/widgets/main_button.dart';
+import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
 import 'package:e_commerce_app/features/home/presentation/view_model/home_cubit.dart';
@@ -27,7 +28,7 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late final PageController pageController;
   late bool isFavorite;
-  late ProductModel? productInCart;
+  late CartItemModel? productInCart;
 
   @override
   void initState() {
@@ -110,6 +111,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         : await widget.homeCubit.saveProduct(
                             ProductModel(
                               id: widget.product.id,
+                              images: widget.product.images,
                               title: widget.product.title,
                               description: widget.product.description,
                               price: widget.product.price,
@@ -235,12 +237,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           : MainButton(
                               onPressed: () async {
                                 await widget.homeCubit.addProductToCart(
-                                  ProductModel(
+                                  CartItemModel(
                                     id: widget.product.id,
+                                    images: widget.product.images,
                                     title: widget.product.title,
-                                    description: widget.product.description,
                                     price: widget.product.price,
-                                    isFavorite: isFavorite,
                                   ),
                                 );
                               },

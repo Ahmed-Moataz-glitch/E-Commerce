@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:e_commerce_app/core/utils/app_api.dart';
 import 'package:e_commerce_app/core/utils/app_constants.dart';
+import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/categories_response_dto.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -65,13 +66,13 @@ class HomeApi {
     await box.delete(productId);
   }
 
-  Future<void> addProductToCart(ProductModel product) async {
-    final box = Hive.box<ProductModel>(AppConstants.cartBox);
+  Future<void> addProductToCart(CartItemModel product) async {
+    final box = Hive.box<CartItemModel>(AppConstants.cartBox);
     await box.put(product.id, product);
   }
 
-  ProductModel? getProductFromCart(int productId) {
-    final box = Hive.box<ProductModel>(AppConstants.cartBox);
+  CartItemModel? getProductFromCart(int productId) {
+    final box = Hive.box<CartItemModel>(AppConstants.cartBox);
     return box.get(productId);
   }
 }

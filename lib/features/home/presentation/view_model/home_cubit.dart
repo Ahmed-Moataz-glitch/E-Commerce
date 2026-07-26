@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
+import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/categories_response_entity.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
@@ -65,7 +66,7 @@ class HomeCubit extends Cubit<HomeState> {
     await deleteProductUseCase.call(productId);
   }
 
-  Future<void> addProductToCart(ProductModel product) async {
+  Future<void> addProductToCart(CartItemModel product) async {
     emit(AddingProductToCart());
     try {
       await addProductToCartUseCase.call(product);
@@ -75,7 +76,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  ProductModel? getProductFromCart(int productId) {
+  CartItemModel? getProductFromCart(int productId) {
     return getProductFromCartUseCase.call(productId);
   }
 }

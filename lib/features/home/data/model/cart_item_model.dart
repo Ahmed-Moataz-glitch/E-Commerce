@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
 
-part 'product_model.g.dart';
+part 'cart_item_model.g.dart';
 
-@HiveType(typeId: 0)
-class ProductModel extends HiveObject {
+@HiveType(typeId: 1)
+class CartItemModel extends HiveObject {
   @HiveField(0)
   final int id;
   @HiveField(1)
@@ -12,18 +12,15 @@ class ProductModel extends HiveObject {
   @HiveField(2)
   final String title;
   @HiveField(3)
-  final String description;
+  int itemCount;
   @HiveField(4)
   final int price;
-  @HiveField(5)
-  final bool isFavorite;
-  
-  ProductModel({
+
+  CartItemModel({
     required this.id,
     required this.images,
     required this.title,
-    required this.description,
+    this.itemCount = 1,
     required this.price,
-    required this.isFavorite,
   });
 }

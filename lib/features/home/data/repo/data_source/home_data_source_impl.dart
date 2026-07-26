@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/home/data/api/home_api.dart';
+import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/categories_response_dto.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/data/model/products_response_dto.dart';
@@ -53,12 +54,12 @@ class HomeDataSourceImpl extends HomeDataSource {
   }
   
   @override
-  Future<void> addProductToCart(ProductModel product) async {
+  Future<void> addProductToCart(CartItemModel product) async {
     return await _homeApi.addProductToCart(product);
   }
   
   @override
-  ProductModel? getProductFromCart(int productId) {
+  CartItemModel? getProductFromCart(int productId) {
     return _homeApi.getProductFromCart(productId);
   }
 }
