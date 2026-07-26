@@ -10,7 +10,7 @@ abstract class HomeDataSource {
 
   Future<void> saveProduct(ProductModel product);
 
-  List<ProductModel> getSavedProducts();
+  ProductModel? getSavedProduct(int productId);
 
   Future<void> deleteProduct(int productId);
 }

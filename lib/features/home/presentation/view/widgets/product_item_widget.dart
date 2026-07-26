@@ -23,12 +23,11 @@ class ProductItemWidget extends StatefulWidget {
 
 class _ProductItemWidgetState extends State<ProductItemWidget> {
   late bool isFavorite;
-  // bool isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    isFavorite = widget.homeCubit.getSavedProducts().any((savedProduct) => savedProduct.id == widget.product.id);
+    isFavorite = widget.homeCubit.getSavedProduct(widget.product.id)?.isFavorite ?? false;
   }
 
   @override
@@ -47,8 +46,15 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                   Navigator.pushNamed(
                     context,
                     AppRoutes.productDetails,
-                    arguments: widget.product,
-                  );
+                    arguments: {
+                      'product': widget.product,
+                      'homeCubit': widget.homeCubit,
+                    },
+                  ).then((_) {
+                    setState(() {
+                      isFavorite = widget.homeCubit.getSavedProduct(widget.product.id)?.isFavorite ?? false;
+                    });
+                  });
                 },
                 child: CachedNetworkImage(
                   imageUrl: widget.product.images.first,

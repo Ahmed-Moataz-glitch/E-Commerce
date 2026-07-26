@@ -49,9 +49,9 @@ class HomeApi {
     await box.put(product.id, product);
   }
 
-  List<ProductModel> getSavedProducts() {
+  ProductModel? getSavedProduct(int productId) {
     final box = Hive.box<ProductModel>(AppConstants.productsBox);
-    return box.values.toList();
+    return box.get(productId);
   }
 
   Future<void> deleteProduct(int productId) async {

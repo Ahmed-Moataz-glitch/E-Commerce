@@ -20,8 +20,8 @@ class HomeRepoImpl extends HomeRepo {
   }
 
   @override
-  List<ProductModel> getSavedProducts() {
-    return _homeDataSource.getSavedProducts();
+  ProductModel? getSavedProduct(int productId) {
+    return _homeDataSource.getSavedProduct(productId);
   }
 
   @override

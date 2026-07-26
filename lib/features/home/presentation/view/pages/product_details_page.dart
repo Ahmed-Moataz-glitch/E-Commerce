@@ -1,15 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/views/widgets/main_button.dart';
+import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
+import 'package:e_commerce_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ProductDetailsPage extends StatefulWidget {
+  final HomeCubit homeCubit;
   final ProductsResponseEntity product;
-  const ProductDetailsPage({super.key, required this.product});
+  const ProductDetailsPage({
+    super.key,
+    required this.product,
+    required this.homeCubit,
+  });
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -17,12 +24,15 @@ class ProductDetailsPage extends StatefulWidget {
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late final PageController pageController;
-  int index = 0;
+  late bool isFavorite;
 
   @override
   void initState() {
     super.initState();
     pageController = PageController();
+    isFavorite =
+        widget.homeCubit.getSavedProduct(widget.product.id)?.isFavorite ??
+        false;
   }
 
   @override
@@ -41,21 +51,54 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             backgroundColor: AppColors.background,
             pinned: true,
             leading: Padding(
-              padding: EdgeInsets.only(left: 8.w),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(size: 32.sp, Icons.arrow_back_rounded),
+              padding: EdgeInsets.only(left: 16.w, top: 12.h, bottom: 8.h),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.black.withAlpha(60),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(size: 28.sp, Icons.arrow_back_rounded, color: AppColors.white),
+                ),
               ),
             ),
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(size: 32.sp, Icons.favorite_border),
+              InkWell(
+                splashFactory: NoSplash.splashFactory,
+                onTap: () async {
+                  isFavorite
+                      ? await widget.homeCubit.deleteProduct(widget.product.id)
+                      : await widget.homeCubit.saveProduct(
+                          ProductModel(
+                            id: widget.product.id,
+                            title: widget.product.title,
+                            description: widget.product.description,
+                            price: widget.product.price,
+                            isFavorite: !isFavorite,
+                          ),
+                        );
+                  setState(() {
+                    isFavorite = !isFavorite;
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(6.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.black.withAlpha(60),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: AppColors.white,
+                    size: 28.sp,
+                  ),
+                ),
               ),
             ],
-            actionsPadding: EdgeInsets.only(right: 8.w),
+            actionsPadding: EdgeInsets.only(right: 16.w),
           ),
           SliverPadding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
@@ -137,6 +180,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   maxLines: 8,
                   overflow: TextOverflow.clip,
                   style: TextStyle(
+                    color: AppColors.primary.withAlpha(150),
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),

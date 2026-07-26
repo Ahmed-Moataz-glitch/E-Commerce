@@ -10,7 +10,7 @@ abstract class HomeRepo {
 
   Future<void> saveProduct(ProductModel product);
 
-  List<ProductModel> getSavedProducts();
+  ProductModel? getSavedProduct(int productId);
 
   Future<void> deleteProduct(int productId);
 }

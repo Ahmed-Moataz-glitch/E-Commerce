@@ -38,8 +38,8 @@ class HomeDataSourceImpl extends HomeDataSource {
   }
 
   @override
-  List<ProductModel> getSavedProducts() {
-    return _homeApi.getSavedProducts();
+  ProductModel? getSavedProduct(int productId) {
+    return _homeApi.getSavedProduct(productId);
   }
 
   @override

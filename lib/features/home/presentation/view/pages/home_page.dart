@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage>
     homeCubit = getIt<HomeCubit>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       homeCubit.getCategories();
-      homeCubit.getSavedProducts();
+      homeCubit.getProducts();
     });
   }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_constants.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
@@ -17,6 +19,7 @@ import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
 import 'package:e_commerce_app/features/home/presentation/view/pages/product_details_page.dart';
+import 'package:e_commerce_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -122,9 +125,11 @@ class MyApp extends StatelessWidget {
                 builder: (context) => const AppSection(),
               );
             case AppRoutes.productDetails:
-              final product = settings.arguments as ProductsResponseEntity;
+            final args = settings.arguments as Map<String, dynamic>;
+              final product = args['product'] as ProductsResponseEntity;
+              final homeCubit = args['homeCubit'] as HomeCubit;
               return MaterialPageRoute(
-                builder: (context) => ProductDetailsPage(product: product),
+                builder: (context) => ProductDetailsPage(product: product, homeCubit: homeCubit),
               );
             default:
               return null;

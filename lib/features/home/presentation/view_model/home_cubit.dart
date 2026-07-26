@@ -5,7 +5,7 @@ import 'package:e_commerce_app/features/home/domain/entities/products_response_e
 import 'package:e_commerce_app/features/home/domain/use_case/delete_product_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/get_categories_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/get_products_use_case.dart';
-import 'package:e_commerce_app/features/home/domain/use_case/get_saved_products_use_case.dart';
+import 'package:e_commerce_app/features/home/domain/use_case/get_saved_product_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/save_product_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,13 +15,13 @@ class HomeCubit extends Cubit<HomeState> {
   final GetProductsUseCase getProductsUseCase;
   final GetCategoriesUseCase getCategoriesUseCase;
   final SaveProductUseCase saveProductUseCase;
-  final GetSavedProductsUseCase getSavedProductsUseCase;
+  final GetSavedProductUseCase getSavedProductUseCase;
   final DeleteProductUseCase deleteProductUseCase;
   HomeCubit({
     required this.getCategoriesUseCase,
     required this.getProductsUseCase,
     required this.saveProductUseCase,
-    required this.getSavedProductsUseCase,
+    required this.getSavedProductUseCase,
     required this.deleteProductUseCase,
   }) : super(HomeInitial());
 
@@ -51,8 +51,8 @@ class HomeCubit extends Cubit<HomeState> {
     await saveProductUseCase.call(product);
   }
 
-  List<ProductModel> getSavedProducts() {
-    return getSavedProductsUseCase.call();
+  ProductModel? getSavedProduct(int productId) {
+    return getSavedProductUseCase.call(productId);
   }
 
   Future<void> deleteProduct(int productId) async {
