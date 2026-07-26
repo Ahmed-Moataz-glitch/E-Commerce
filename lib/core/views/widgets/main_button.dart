@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
-  const MainButton({super.key, required this.onPressed, required this.text});
+  const MainButton({super.key, this.onPressed, required this.text});
 
   @override
   Widget build(BuildContext context) {

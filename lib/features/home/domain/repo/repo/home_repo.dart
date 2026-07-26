@@ -13,4 +13,8 @@ abstract class HomeRepo {
   ProductModel? getSavedProduct(int productId);
 
   Future<void> deleteProduct(int productId);
+
+  Future<void> addProductToCart(ProductModel product);
+
+  ProductModel? getProductFromCart(int productId);
 }

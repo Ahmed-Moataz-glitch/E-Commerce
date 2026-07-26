@@ -29,7 +29,8 @@ void main() async {
   await Hive.initFlutter();
   WidgetsFlutterBinding.ensureInitialized();
   Hive.registerAdapter<ProductModel>(ProductModelAdapter());
-  await Hive.openBox<ProductModel>(AppConstants.productsBox);
+  await Hive.openBox<ProductModel>(AppConstants.favoritesBox);
+  await Hive.openBox<ProductModel>(AppConstants.cartBox);
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     publishableKey: AppConstants.publishableKey,
@@ -125,11 +126,12 @@ class MyApp extends StatelessWidget {
                 builder: (context) => const AppSection(),
               );
             case AppRoutes.productDetails:
-            final args = settings.arguments as Map<String, dynamic>;
+              final args = settings.arguments as Map<String, dynamic>;
               final product = args['product'] as ProductsResponseEntity;
               final homeCubit = args['homeCubit'] as HomeCubit;
               return MaterialPageRoute(
-                builder: (context) => ProductDetailsPage(product: product, homeCubit: homeCubit),
+                builder: (context) =>
+                    ProductDetailsPage(product: product, homeCubit: homeCubit),
               );
             default:
               return null;

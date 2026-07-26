@@ -14,12 +14,14 @@ class HomeApi {
     final url = Uri.https(AppApi.baseUrl, AppApi.productsEndpoint);
     try {
       var response = await http.get(url);
-      if(response.statusCode != 200){
+      if (response.statusCode != 200) {
         return ApiError<List<ProductsResponseDto>>('Failed to fetch products');
       } else {
         final responseBody = response.body;
         final json = jsonDecode(responseBody);
-        final products = (json as List).map((json) => ProductsResponseDto.fromJson(json)).toList();
+        final products = (json as List)
+            .map((json) => ProductsResponseDto.fromJson(json))
+            .toList();
         return ApiSuccess<List<ProductsResponseDto>>(products);
       }
     } catch (e) {
@@ -31,12 +33,16 @@ class HomeApi {
     final url = Uri.https(AppApi.baseUrl, AppApi.categoriesEndpoint);
     try {
       var response = await http.get(url);
-      if(response.statusCode != 200){
-        return ApiError<List<CategoriesResponseDto>>('Failed to fetch categories');
+      if (response.statusCode != 200) {
+        return ApiError<List<CategoriesResponseDto>>(
+          'Failed to fetch categories',
+        );
       } else {
         final responseBody = response.body;
         final json = jsonDecode(responseBody);
-        final categories = (json as List).map((json) => CategoriesResponseDto.fromJson(json)).toList();
+        final categories = (json as List)
+            .map((json) => CategoriesResponseDto.fromJson(json))
+            .toList();
         return ApiSuccess<List<CategoriesResponseDto>>(categories);
       }
     } catch (e) {
@@ -45,17 +51,27 @@ class HomeApi {
   }
 
   Future<void> saveProduct(ProductModel product) async {
-    final box = Hive.box<ProductModel>(AppConstants.productsBox);
+    final box = Hive.box<ProductModel>(AppConstants.favoritesBox);
     await box.put(product.id, product);
   }
 
   ProductModel? getSavedProduct(int productId) {
-    final box = Hive.box<ProductModel>(AppConstants.productsBox);
+    final box = Hive.box<ProductModel>(AppConstants.favoritesBox);
     return box.get(productId);
   }
 
   Future<void> deleteProduct(int productId) async {
-    final box = Hive.box<ProductModel>(AppConstants.productsBox);
+    final box = Hive.box<ProductModel>(AppConstants.favoritesBox);
     await box.delete(productId);
+  }
+
+  Future<void> addProductToCart(ProductModel product) async {
+    final box = Hive.box<ProductModel>(AppConstants.cartBox);
+    await box.put(product.id, product);
+  }
+
+  ProductModel? getProductFromCart(int productId) {
+    final box = Hive.box<ProductModel>(AppConstants.cartBox);
+    return box.get(productId);
   }
 }

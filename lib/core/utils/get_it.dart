@@ -15,8 +15,10 @@ import 'package:e_commerce_app/features/home/data/repo/data_source/home_data_sou
 import 'package:e_commerce_app/features/home/data/repo/repo/home_repo_impl.dart';
 import 'package:e_commerce_app/features/home/domain/repo/data_source/home_data_source.dart';
 import 'package:e_commerce_app/features/home/domain/repo/repo/home_repo.dart';
+import 'package:e_commerce_app/features/home/domain/use_case/add_product_to_cart_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/delete_product_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/get_categories_use_case.dart';
+import 'package:e_commerce_app/features/home/domain/use_case/get_product_from_cart_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/get_products_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/get_saved_product_use_case.dart';
 import 'package:e_commerce_app/features/home/domain/use_case/save_product_use_case.dart';
@@ -72,6 +74,12 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<DeleteProductUseCase>(
     DeleteProductUseCase(getIt<HomeRepo>()),
   );
+  getIt.registerSingleton<AddProductToCartUseCase>(
+    AddProductToCartUseCase(getIt<HomeRepo>()),
+  );
+  getIt.registerSingleton<GetProductFromCartUseCase>(
+    GetProductFromCartUseCase(getIt<HomeRepo>()),
+  );
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(
       getProductsUseCase: getIt<GetProductsUseCase>(),
@@ -79,6 +87,8 @@ Future<void> setupGetIt() async {
       saveProductUseCase: getIt<SaveProductUseCase>(),
       getSavedProductUseCase: getIt<GetSavedProductUseCase>(),
       deleteProductUseCase: getIt<DeleteProductUseCase>(),
+      addProductToCartUseCase: getIt<AddProductToCartUseCase>(),
+      getProductFromCartUseCase: getIt<GetProductFromCartUseCase>(),
     ),
   );
 }

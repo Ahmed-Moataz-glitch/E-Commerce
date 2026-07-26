@@ -27,3 +27,12 @@ final class GetProductsError extends HomeState {
   final String message;
   GetProductsError(this.message);
 }
+
+final class AddingProductToCart extends HomeState {}
+
+final class ProductAddedToCart extends HomeState {}
+
+final class ProductAddToCartError extends HomeState {
+  final String message;
+  ProductAddToCartError(this.message);
+}
