@@ -33,4 +33,14 @@ class HomeRepoImpl extends HomeRepo {
   Future<void> deleteProduct(int productId) async {
     return await _homeDataSource.deleteProduct(productId);
   }
+  
+  @override
+  Future<void> addProductToCart(ProductModel product) async {
+    return await _homeDataSource.addProductToCart(product);
+  }
+  
+  @override
+  ProductModel? getProductFromCart(int productId) {
+    return _homeDataSource.getProductFromCart(productId);
+  }
 }

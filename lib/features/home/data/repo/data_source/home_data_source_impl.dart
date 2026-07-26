@@ -51,4 +51,14 @@ class HomeDataSourceImpl extends HomeDataSource {
   Future<void> deleteProduct(int productId) async {
     return await _homeApi.deleteProduct(productId);
   }
+  
+  @override
+  Future<void> addProductToCart(ProductModel product) async {
+    return await _homeApi.addProductToCart(product);
+  }
+  
+  @override
+  ProductModel? getProductFromCart(int productId) {
+    return _homeApi.getProductFromCart(productId);
+  }
 }
