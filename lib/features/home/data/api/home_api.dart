@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 import 'package:e_commerce_app/core/utils/app_api.dart';
+import 'package:e_commerce_app/core/utils/app_constants.dart';
 import 'package:e_commerce_app/features/home/data/model/categories_response_dto.dart';
+import 'package:e_commerce_app/features/home/data/model/product_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/home/data/model/products_response_dto.dart';
@@ -39,5 +42,20 @@ class HomeApi {
     } catch (e) {
       return ApiError<List<CategoriesResponseDto>>(e.toString());
     }
+  }
+
+  Future<void> saveProduct(ProductModel product) async {
+    final box = Hive.box<ProductModel>(AppConstants.productsBox);
+    await box.put(product.id, product);
+  }
+
+  ProductModel? getSavedProduct(int productId) {
+    final box = Hive.box<ProductModel>(AppConstants.productsBox);
+    return box.get(productId);
+  }
+
+  Future<void> deleteProduct(int productId) async {
+    final box = Hive.box<ProductModel>(AppConstants.productsBox);
+    await box.delete(productId);
   }
 }

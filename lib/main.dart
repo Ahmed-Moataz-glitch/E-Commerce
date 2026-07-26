@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_constants.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
@@ -14,12 +16,20 @@ import 'package:e_commerce_app/features/auth/presentation/view/pages/successful_
 import 'package:e_commerce_app/features/auth/presentation/view/pages/verify_code_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/pages/verify_email_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:e_commerce_app/features/home/data/model/product_model.dart';
+import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
+import 'package:e_commerce_app/features/home/presentation/view/pages/product_details_page.dart';
+import 'package:e_commerce_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
+  await Hive.initFlutter();
   WidgetsFlutterBinding.ensureInitialized();
+  Hive.registerAdapter<ProductModel>(ProductModelAdapter());
+  await Hive.openBox<ProductModel>(AppConstants.productsBox);
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     publishableKey: AppConstants.publishableKey,
@@ -113,6 +123,13 @@ class MyApp extends StatelessWidget {
             case AppRoutes.appSection:
               return MaterialPageRoute(
                 builder: (context) => const AppSection(),
+              );
+            case AppRoutes.productDetails:
+            final args = settings.arguments as Map<String, dynamic>;
+              final product = args['product'] as ProductsResponseEntity;
+              final homeCubit = args['homeCubit'] as HomeCubit;
+              return MaterialPageRoute(
+                builder: (context) => ProductDetailsPage(product: product, homeCubit: homeCubit),
               );
             default:
               return null;
