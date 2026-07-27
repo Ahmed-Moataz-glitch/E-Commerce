@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_response_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/reset_password_request_entity.dart';
@@ -13,6 +14,10 @@ abstract class AuthDataSource {
 
   Future<ApiResult<LoginResponseEntity>> login(
     LoginRequestEntity loginRequestEntity,
+  );
+
+  Future<ApiResult<LoginResponseEntity>> refreshToken(
+    RefreshTokenRequestEntity refreshTokenRequestEntity,
   );
 
   Future<ApiResult<ResetPasswordResponseEntity>> resetPassword(
