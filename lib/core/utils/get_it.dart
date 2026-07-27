@@ -19,6 +19,16 @@ import 'package:e_commerce_app/features/cart/domain/use_case/clear_cart_use_case
 import 'package:e_commerce_app/features/cart/domain/use_case/get_cart_products_use_case.dart';
 import 'package:e_commerce_app/features/cart/domain/use_case/remove_product_from_cart_use_case.dart';
 import 'package:e_commerce_app/features/cart/presentation/view_model/cart_cubit.dart';
+import 'package:e_commerce_app/features/favorite/data/api/favorite_api.dart';
+import 'package:e_commerce_app/features/favorite/data/repo/data_source/favorite_data_source_impl.dart';
+import 'package:e_commerce_app/features/favorite/data/repo/repo/favorite_repo_impl.dart';
+import 'package:e_commerce_app/features/favorite/domain/repo/data_source/favorite_data_source.dart';
+import 'package:e_commerce_app/features/favorite/domain/repo/repo/favorite_repo.dart';
+import 'package:e_commerce_app/features/favorite/domain/use_case/add_favorite_product_to_cart_use_case.dart';
+import 'package:e_commerce_app/features/favorite/domain/use_case/get_favorite_product_from_cart_use_case.dart';
+import 'package:e_commerce_app/features/favorite/domain/use_case/get_favorite_products_use_case.dart';
+import 'package:e_commerce_app/features/favorite/domain/use_case/remove_products_from_favorites_use_case.dart';
+import 'package:e_commerce_app/features/favorite/presentation/view_model/favorite_cubit.dart';
 import 'package:e_commerce_app/features/home/data/api/home_api.dart';
 import 'package:e_commerce_app/features/home/data/repo/data_source/home_data_source_impl.dart';
 import 'package:e_commerce_app/features/home/data/repo/repo/home_repo_impl.dart';
@@ -118,6 +128,35 @@ Future<void> setupGetIt() async {
       getCartProductsUseCase: getIt<GetCartProductsUseCase>(),
       removeProductFromCartUseCase: getIt<RemoveProductFromCartUseCase>(),
       clearCartUseCase: getIt<ClearCartUseCase>(),
-    )
+    ),
+  );
+
+  getIt.registerSingleton<FavoriteApi>(FavoriteApi());
+  getIt.registerSingleton<FavoriteDataSource>(
+    FavoriteDataSourceImpl(getIt<FavoriteApi>()),
+  );
+  getIt.registerSingleton<FavoriteRepo>(
+    FavoriteRepoImpl(getIt<FavoriteDataSource>()),
+  );
+  getIt.registerSingleton<GetFavoriteProductsUseCase>(
+    GetFavoriteProductsUseCase(getIt<FavoriteRepo>()),
+  );
+  getIt.registerSingleton<AddFavoriteProductToCartUseCase>(
+    AddFavoriteProductToCartUseCase(getIt<FavoriteRepo>()),
+  );
+  getIt.registerSingleton<RemoveProductsFromFavoritesUseCase>(
+    RemoveProductsFromFavoritesUseCase(getIt<FavoriteRepo>()),
+  );
+  getIt.registerSingleton<GetFavoriteProductFromCartUseCase>(
+    GetFavoriteProductFromCartUseCase(getIt<FavoriteRepo>()),
+  );
+  getIt.registerFactory(
+    () => FavoriteCubit(
+      getFavoriteProductsUseCase: getIt<GetFavoriteProductsUseCase>(),
+      addProductToCartUseCase: getIt<AddFavoriteProductToCartUseCase>(),
+      removeProductsFromFavoritesUseCase:
+          getIt<RemoveProductsFromFavoritesUseCase>(),
+      getProductFromCartUseCase: getIt<GetFavoriteProductFromCartUseCase>(),
+    ),
   );
 }
