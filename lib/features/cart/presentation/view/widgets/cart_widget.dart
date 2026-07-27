@@ -202,7 +202,7 @@ class _CartWidgetState extends State<CartWidget> {
                         ? const SizedBox.shrink()
                         : Column(
                             children: [
-                              SizedBox(height: size.height * 0.25),
+                              SizedBox(height: size.height * 0.15),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -304,6 +304,7 @@ class _CartWidgetState extends State<CartWidget> {
                                   );
                                 },
                               ),
+                              SizedBox(height: 16.h),
                             ],
                           ),
                   ],
