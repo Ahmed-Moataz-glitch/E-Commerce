@@ -15,4 +15,9 @@ class CartRepoImpl extends CartRepo {
   Future<void> removeProductFromCart(int productId) async {
     return await _cartDataSource.removeProductFromCart(productId);
   }
+  
+  @override
+  Future<int> clearCart() async {
+    return await _cartDataSource.clearCart();
+  }
 }

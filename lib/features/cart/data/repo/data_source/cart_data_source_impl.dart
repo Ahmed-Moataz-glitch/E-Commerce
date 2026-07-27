@@ -15,4 +15,9 @@ class CartDataSourceImpl extends CartDataSource {
   Future<void> removeProductFromCart(int productId) async {
     return await _cartApi.removeProductFromCart(productId);
   }
+  
+  @override
+  Future<int> clearCart() async {
+    return await _cartApi.clearCart();
+  }
 }

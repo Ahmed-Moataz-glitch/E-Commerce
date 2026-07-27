@@ -4,4 +4,6 @@ abstract class CartRepo {
   List<CartItemModel> getCartProducts();
 
   Future<void> removeProductFromCart(int productId);
+
+  Future<int> clearCart();
 }

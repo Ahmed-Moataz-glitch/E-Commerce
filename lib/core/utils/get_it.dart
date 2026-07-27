@@ -15,6 +15,7 @@ import 'package:e_commerce_app/features/cart/data/repo/data_source/cart_data_sou
 import 'package:e_commerce_app/features/cart/data/repo/repo/cart_repo_impl.dart';
 import 'package:e_commerce_app/features/cart/domain/repo/data_source/cart_data_source.dart';
 import 'package:e_commerce_app/features/cart/domain/repo/repo/cart_repo.dart';
+import 'package:e_commerce_app/features/cart/domain/use_case/clear_cart_use_case.dart';
 import 'package:e_commerce_app/features/cart/domain/use_case/get_cart_products_use_case.dart';
 import 'package:e_commerce_app/features/cart/domain/use_case/remove_product_from_cart_use_case.dart';
 import 'package:e_commerce_app/features/cart/presentation/view_model/cart_cubit.dart';
@@ -109,10 +110,14 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<RemoveProductFromCartUseCase>(
     RemoveProductFromCartUseCase(getIt<CartRepo>()),
   );
+  getIt.registerSingleton<ClearCartUseCase>(
+    ClearCartUseCase(getIt<CartRepo>()),
+  );
   getIt.registerFactory(
     () => CartCubit(
       getCartProductsUseCase: getIt<GetCartProductsUseCase>(),
       removeProductFromCartUseCase: getIt<RemoveProductFromCartUseCase>(),
+      clearCartUseCase: getIt<ClearCartUseCase>(),
     )
   );
 }

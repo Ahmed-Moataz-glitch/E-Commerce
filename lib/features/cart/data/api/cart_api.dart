@@ -12,4 +12,9 @@ class CartApi {
     final cartBox = Hive.box<CartItemModel>(AppConstants.cartBox);
     return await cartBox.delete(productId);
   }
+
+  Future<int> clearCart() async {
+    final cartBox = Hive.box<CartItemModel>(AppConstants.cartBox);
+    return await cartBox.clear();
+  }
 }
