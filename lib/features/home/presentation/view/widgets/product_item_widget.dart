@@ -87,6 +87,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                         : await widget.homeCubit.saveProduct(
                             ProductModel(
                               id: widget.product.id,
+                              images: widget.product.images,
                               title: widget.product.title,
                               description: widget.product.description,
                               price: widget.product.price,

@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
+import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/categories_response_entity.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
@@ -14,7 +15,7 @@ abstract class HomeRepo {
 
   Future<void> deleteProduct(int productId);
 
-  Future<void> addProductToCart(ProductModel product);
+  Future<void> addProductToCart(CartItemModel product);
 
-  ProductModel? getProductFromCart(int productId);
+  CartItemModel? getProductFromCart(int productId);
 }

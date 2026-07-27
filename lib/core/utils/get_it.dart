@@ -10,6 +10,15 @@ import 'package:e_commerce_app/features/auth/domain/use_case/send_otp_for_existi
 import 'package:e_commerce_app/features/auth/domain/use_case/send_otp_for_new_user_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/validate_otp_use_case.dart';
 import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:e_commerce_app/features/cart/data/api/cart_api.dart';
+import 'package:e_commerce_app/features/cart/data/repo/data_source/cart_data_source_impl.dart';
+import 'package:e_commerce_app/features/cart/data/repo/repo/cart_repo_impl.dart';
+import 'package:e_commerce_app/features/cart/domain/repo/data_source/cart_data_source.dart';
+import 'package:e_commerce_app/features/cart/domain/repo/repo/cart_repo.dart';
+import 'package:e_commerce_app/features/cart/domain/use_case/clear_cart_use_case.dart';
+import 'package:e_commerce_app/features/cart/domain/use_case/get_cart_products_use_case.dart';
+import 'package:e_commerce_app/features/cart/domain/use_case/remove_product_from_cart_use_case.dart';
+import 'package:e_commerce_app/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:e_commerce_app/features/home/data/api/home_api.dart';
 import 'package:e_commerce_app/features/home/data/repo/data_source/home_data_source_impl.dart';
 import 'package:e_commerce_app/features/home/data/repo/repo/home_repo_impl.dart';
@@ -90,5 +99,25 @@ Future<void> setupGetIt() async {
       addProductToCartUseCase: getIt<AddProductToCartUseCase>(),
       getProductFromCartUseCase: getIt<GetProductFromCartUseCase>(),
     ),
+  );
+
+  getIt.registerSingleton<CartApi>(CartApi());
+  getIt.registerSingleton<CartDataSource>(CartDataSourceImpl(getIt<CartApi>()));
+  getIt.registerSingleton<CartRepo>(CartRepoImpl(getIt<CartDataSource>()));
+  getIt.registerSingleton<GetCartProductsUseCase>(
+    GetCartProductsUseCase(getIt<CartRepo>()),
+  );
+  getIt.registerSingleton<RemoveProductFromCartUseCase>(
+    RemoveProductFromCartUseCase(getIt<CartRepo>()),
+  );
+  getIt.registerSingleton<ClearCartUseCase>(
+    ClearCartUseCase(getIt<CartRepo>()),
+  );
+  getIt.registerFactory(
+    () => CartCubit(
+      getCartProductsUseCase: getIt<GetCartProductsUseCase>(),
+      removeProductFromCartUseCase: getIt<RemoveProductFromCartUseCase>(),
+      clearCartUseCase: getIt<ClearCartUseCase>(),
+    )
   );
 }
