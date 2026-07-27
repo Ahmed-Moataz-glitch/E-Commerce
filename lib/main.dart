@@ -38,7 +38,7 @@ void main() async {
     publishableKey: AppConstants.publishableKey,
   );
   await setupGetIt();
-  final token = await SecureStorage.getToken();
+  final token = await SecureStorage.getAccessToken();
   debugPrint('Token: $token');
   runApp(MyApp(token: token));
 }

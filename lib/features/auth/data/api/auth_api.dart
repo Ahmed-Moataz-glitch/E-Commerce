@@ -4,6 +4,7 @@ import 'package:e_commerce_app/core/utils/secure_storage.dart';
 import 'package:e_commerce_app/core/utils/shared_preferences.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_response_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_response_dto.dart';
 import 'package:http/http.dart' as http;
@@ -50,10 +51,28 @@ class AuthApi {
       }
       final responseBody = response.body;
       final json = jsonDecode(responseBody);
-      await SecureStorage.saveToken(json['access_token']);
-      return ApiSuccess<LoginResponseDto>(
-        LoginResponseDto.fromJson(json),
-      );
+      await SecureStorage.saveAccessToken(json['access_token']);
+      await SecureStorage.saveRefreshToken(json['refresh_token']);
+      return ApiSuccess<LoginResponseDto>(LoginResponseDto.fromJson(json));
+    } catch (e) {
+      return ApiError<LoginResponseDto>(e.toString());
+    }
+  }
+
+  Future<ApiResult<LoginResponseDto>> refreshToken(
+    RefreshTokenRequestDto refreshTokenRequestDto,
+  ) async {
+    final url = Uri.https(AppApi.baseUrl, AppApi.refreshTokenEndpoint);
+    try {
+      var response = await http.post(url, body: refreshTokenRequestDto.toJson());
+      if (response.statusCode != 201) {
+        return ApiError<LoginResponseDto>(
+          'Failed to refresh token. Status code: ${response.statusCode}',
+        );
+      }
+      final responseBody = response.body;
+      final json = jsonDecode(responseBody);
+      return ApiSuccess<LoginResponseDto>(LoginResponseDto.fromJson(json));
     } catch (e) {
       return ApiError<LoginResponseDto>(e.toString());
     }
@@ -63,9 +82,15 @@ class AuthApi {
     ResetPasswordRequestDto resetPasswordRequestDto,
   ) async {
     final userId = await FlutterSharedPreferences.instance.getUserId();
-    final url = Uri.https(AppApi.baseUrl, AppApi.resetPasswordEndpoint + userId);
+    final url = Uri.https(
+      AppApi.baseUrl,
+      AppApi.resetPasswordEndpoint + userId,
+    );
     try {
-      var response = await http.put(url, body: resetPasswordRequestDto.toJson());
+      var response = await http.put(
+        url,
+        body: resetPasswordRequestDto.toJson(),
+      );
       if (response.statusCode != 200) {
         return ApiError<ResetPasswordResponseDto>(
           'Failed to reset password. Status code: ${response.statusCode}',
@@ -83,10 +108,7 @@ class AuthApi {
 
   Future<void> sendOtpForNewUser(String email) async {
     try {
-      await supabase.auth.signInWithOtp(
-        email: email,
-        shouldCreateUser: true,
-      );
+      await supabase.auth.signInWithOtp(email: email, shouldCreateUser: true);
     } catch (e) {
       throw 'Error from send OTP for new user: $e';
     }
@@ -94,10 +116,7 @@ class AuthApi {
 
   Future<void> sendOtpForExistingUser(String email) async {
     try {
-      await supabase.auth.signInWithOtp(
-        email: email,
-        shouldCreateUser: false,
-      );
+      await supabase.auth.signInWithOtp(email: email, shouldCreateUser: false);
     } catch (e) {
       throw 'Error from send OTP for existing user: $e';
     }

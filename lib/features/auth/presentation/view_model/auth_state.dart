@@ -68,3 +68,10 @@ final class VerifyingOtpError extends AuthState {
 
   VerifyingOtpError(this.message);
 }
+
+final class RefreshTokenSuccess extends AuthState {}
+
+final class RefreshTokenError extends AuthState {
+  final String message;
+  RefreshTokenError(this.message);
+}
