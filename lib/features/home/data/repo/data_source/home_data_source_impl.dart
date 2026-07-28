@@ -39,8 +39,8 @@ class HomeDataSourceImpl extends HomeDataSource {
   }
 
   @override
-  ProductModel? getSavedProduct(int productId) {
-    return _homeApi.getSavedProduct(productId);
+  Future<ProductModel?> getSavedProduct(int productId) async {
+    return await _homeApi.getSavedProduct(productId);
   }
 
   @override
@@ -59,7 +59,7 @@ class HomeDataSourceImpl extends HomeDataSource {
   }
   
   @override
-  CartItemModel? getProductFromCart(int productId) {
-    return _homeApi.getProductFromCart(productId);
+  Future<CartItemModel?> getProductFromCart(int productId) async {
+    return await _homeApi.getProductFromCart(productId);
   }
 }

@@ -11,11 +11,11 @@ abstract class HomeRepo {
 
   Future<void> saveProduct(ProductModel product);
 
-  ProductModel? getSavedProduct(int productId);
+  Future<ProductModel?> getSavedProduct(int productId);
 
   Future<void> deleteProduct(int productId);
 
   Future<void> addProductToCart(CartItemModel product);
 
-  CartItemModel? getProductFromCart(int productId);
+  Future<CartItemModel?> getProductFromCart(int productId);
 }

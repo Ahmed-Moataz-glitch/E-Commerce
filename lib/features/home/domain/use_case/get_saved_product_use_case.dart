@@ -5,7 +5,7 @@ class GetSavedProductUseCase {
   final HomeRepo _homeRepo;
   GetSavedProductUseCase(this._homeRepo);
 
-  ProductModel? call(int productId) {
+  Future<ProductModel?> call(int productId) {
     return _homeRepo.getSavedProduct(productId);
   }
 }

@@ -13,8 +13,8 @@ class FavoriteDataSourceImpl extends FavoriteDataSource {
   }
 
   @override
-  List<ProductModel> getFavoriteProducts() {
-    return _favoriteApi.getFavoriteProducts();
+  Future<List<ProductModel>> getFavoriteProducts() async {
+    return await _favoriteApi.getFavoriteProducts();
   }
 
   @override
@@ -23,7 +23,7 @@ class FavoriteDataSourceImpl extends FavoriteDataSource {
   }
   
   @override
-  CartItemModel? getProductFromCart(int productId) {
-    return _favoriteApi.getProductFromCart(productId);
+  Future<CartItemModel?> getProductFromCart(int productId) async {
+    return await _favoriteApi.getProductFromCart(productId);
   }
 }

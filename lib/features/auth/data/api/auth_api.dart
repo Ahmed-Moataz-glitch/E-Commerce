@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:e_commerce_app/core/utils/app_api.dart';
 import 'package:e_commerce_app/core/utils/secure_storage.dart';
 import 'package:e_commerce_app/core/utils/shared_preferences.dart';
+import 'package:e_commerce_app/core/utils/user_hive_boxes.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_response_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
@@ -30,6 +31,7 @@ class AuthApi {
       final responseBody = response.body;
       final json = jsonDecode(responseBody);
       await FlutterSharedPreferences.instance.saveUserId(json['id'].toString());
+      await UserHiveBoxes.openCurrentUserBoxes();
       return ApiSuccess<RegisterResponseDto>(
         RegisterResponseDto.fromJson(json),
       );
@@ -53,28 +55,35 @@ class AuthApi {
       final json = jsonDecode(responseBody);
       await SecureStorage.saveAccessToken(json['access_token']);
       await SecureStorage.saveRefreshToken(json['refresh_token']);
+      await FlutterSharedPreferences.instance.removeUserId();
+      await saveLoggedInUserId(json['access_token']);
+      await UserHiveBoxes.openCurrentUserBoxes();
       return ApiSuccess<LoginResponseDto>(LoginResponseDto.fromJson(json));
     } catch (e) {
       return ApiError<LoginResponseDto>(e.toString());
     }
   }
 
-  Future<ApiResult<LoginResponseDto>> refreshToken(
-    RefreshTokenRequestDto refreshTokenRequestDto,
-  ) async {
+  Future refreshToken(RefreshTokenRequestDto refreshTokenRequestDto) async {
     final url = Uri.https(AppApi.baseUrl, AppApi.refreshTokenEndpoint);
     try {
-      var response = await http.post(url, body: refreshTokenRequestDto.toJson());
+      var response = await http.post(
+        url,
+        body: refreshTokenRequestDto.toJson(),
+      );
       if (response.statusCode != 201) {
-        return ApiError<LoginResponseDto>(
-          'Failed to refresh token. Status code: ${response.statusCode}',
-        );
+        return 'Failed to refresh token. Status code: ${response.statusCode}';
       }
       final responseBody = response.body;
       final json = jsonDecode(responseBody);
-      return ApiSuccess<LoginResponseDto>(LoginResponseDto.fromJson(json));
+      await SecureStorage.saveAccessToken(json['access_token']);
+      await SecureStorage.saveRefreshToken(json['refresh_token']);
+      await FlutterSharedPreferences.instance.removeUserId();
+      await saveLoggedInUserId(json['access_token']);
+      await UserHiveBoxes.openCurrentUserBoxes();
+      return json['access_token'];
     } catch (e) {
-      return ApiError<LoginResponseDto>(e.toString());
+      return e.toString();
     }
   }
 
@@ -132,6 +141,25 @@ class AuthApi {
       return result.session != null;
     } catch (e) {
       throw 'Error from validate OTP: $e';
+    }
+  }
+
+  Future<void> saveLoggedInUserId(String accessToken) async {
+    try {
+      final url = Uri.https(AppApi.baseUrl, AppApi.profileEndpoint);
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+      if (response.statusCode != 200) return;
+
+      final json = jsonDecode(response.body);
+      final userId = json['id'];
+      if (userId != null) {
+        await FlutterSharedPreferences.instance.saveUserId(userId.toString());
+      }
+    } catch (_) {
+      return;
     }
   }
 }

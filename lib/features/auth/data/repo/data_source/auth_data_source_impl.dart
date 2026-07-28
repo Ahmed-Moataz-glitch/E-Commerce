@@ -2,14 +2,12 @@ import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_response_dto.dart';
-import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/register_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/register_response_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_response_dto.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_response_entity.dart';
-import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/reset_password_request_entity.dart';
@@ -85,20 +83,5 @@ class AuthDataSourceImpl extends AuthDataSource {
   @override
   Future<bool> validateOtp({required String email, required String otp}) async {
     return await _authApi.validateOtp(email: email, otp: otp);
-  }
-
-  @override
-  Future<ApiResult<LoginResponseEntity>> refreshToken(RefreshTokenRequestEntity refreshTokenRequestEntity) async {
-    final result = await _authApi.refreshToken(
-      RefreshTokenRequestDto(
-        refreshToken: refreshTokenRequestEntity.refreshToken,
-      ),
-    );
-    switch (result) {
-      case ApiSuccess<LoginResponseDto>():
-        return ApiSuccess<LoginResponseEntity>(result.data?.toEntity());
-      case ApiError<LoginResponseDto>():
-        return ApiError<LoginResponseEntity>(result.message);
-    }
   }
 }

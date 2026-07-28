@@ -4,7 +4,6 @@ import 'package:e_commerce_app/features/auth/data/repo/repo/auth_repo_impl.dart'
 import 'package:e_commerce_app/features/auth/domain/repo/data_source/auth_data_source.dart';
 import 'package:e_commerce_app/features/auth/domain/repo/repo/auth_repo.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/login_use_case.dart';
-import 'package:e_commerce_app/features/auth/domain/use_case/refresh_token_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/register_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/reset_password_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/send_otp_for_existing_user_use_case.dart';
@@ -53,7 +52,6 @@ Future<void> setupGetIt() async {
   getIt.registerSingleton<AuthRepo>(AuthRepoImpl(getIt<AuthDataSource>()));
   getIt.registerSingleton<RegisterUseCase>(RegisterUseCase(getIt<AuthRepo>()));
   getIt.registerSingleton<LoginUseCase>(LoginUseCase(getIt<AuthRepo>()));
-  getIt.registerSingleton<RefreshTokenUseCase>(RefreshTokenUseCase(getIt<AuthRepo>()));
   getIt.registerSingleton<SendOtpForExistingUserUseCase>(
     SendOtpForExistingUserUseCase(getIt<AuthRepo>()),
   );
@@ -70,7 +68,6 @@ Future<void> setupGetIt() async {
     () => AuthCubit(
       registerUseCase: getIt<RegisterUseCase>(),
       loginUseCase: getIt<LoginUseCase>(),
-      refreshTokenUseCase: getIt<RefreshTokenUseCase>(),
       resetPasswordUseCase: getIt<ResetPasswordUseCase>(),
       sendOtpForNewUserUseCase: getIt<SendOtpForNewUserUseCase>(),
       sendOtpForExistingUserUseCase: getIt<SendOtpForExistingUserUseCase>(),

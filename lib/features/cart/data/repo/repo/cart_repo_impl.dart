@@ -7,8 +7,8 @@ class CartRepoImpl extends CartRepo {
   CartRepoImpl(this._cartDataSource);
 
   @override
-  List<CartItemModel> getCartProducts() {
-    return _cartDataSource.getCartProducts();
+  Future<List<CartItemModel>> getCartProducts() async {
+    return await _cartDataSource.getCartProducts();
   }
   
   @override

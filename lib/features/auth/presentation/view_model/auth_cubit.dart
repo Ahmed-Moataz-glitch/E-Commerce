@@ -1,13 +1,11 @@
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_response_entity.dart';
-import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/reset_password_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/reset_password_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/login_use_case.dart';
-import 'package:e_commerce_app/features/auth/domain/use_case/refresh_token_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/register_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/reset_password_use_case.dart';
 import 'package:e_commerce_app/features/auth/domain/use_case/send_otp_for_existing_user_use_case.dart';
@@ -20,7 +18,6 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final RegisterUseCase registerUseCase;
   final LoginUseCase loginUseCase;
-  final RefreshTokenUseCase refreshTokenUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
   final SendOtpForNewUserUseCase sendOtpForNewUserUseCase;
   final SendOtpForExistingUserUseCase sendOtpForExistingUserUseCase;
@@ -28,7 +25,6 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
     required this.registerUseCase,
     required this.loginUseCase,
-    required this.refreshTokenUseCase,
     required this.resetPasswordUseCase,
     required this.sendOtpForNewUserUseCase,
     required this.sendOtpForExistingUserUseCase,
@@ -57,20 +53,6 @@ class AuthCubit extends Cubit<AuthState> {
         break;
       case ApiError<LoginResponseEntity>():
         emit(LoginError(result.message));
-        break;
-    }
-  }
-
-  Future<void> refreshToken(
-    RefreshTokenRequestEntity refreshTokenRequestEntity,
-  ) async {
-    final result = await refreshTokenUseCase.call(refreshTokenRequestEntity);
-    switch (result) {
-      case ApiSuccess<LoginResponseEntity>():
-        emit(RefreshTokenSuccess());
-        break;
-      case ApiError<LoginResponseEntity>():
-        emit(RefreshTokenError(result.message));
         break;
     }
   }

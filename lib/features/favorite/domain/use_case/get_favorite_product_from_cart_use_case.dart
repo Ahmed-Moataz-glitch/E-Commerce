@@ -6,7 +6,7 @@ class GetFavoriteProductFromCartUseCase {
 
   GetFavoriteProductFromCartUseCase(this._favoriteRepo);
 
-  CartItemModel? call(int productId) {
+  Future<CartItemModel?> call(int productId) {
     return _favoriteRepo.getProductFromCart(productId);
   }
 }
