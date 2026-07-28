@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/core/utils/app_constants.dart';
 import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
 import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -8,24 +9,23 @@ abstract class SecureStorage {
   static final flutterSecureStorage = FlutterSecureStorage();
 
   static Future<void> saveAccessToken(String token) async {
-    await flutterSecureStorage.write(key: 'access-token', value: token);
+    await flutterSecureStorage.write(key: AppConstants.accessTokenKey, value: token);
   }
 
   static Future<void> saveRefreshToken(String token) async {
-    await flutterSecureStorage.write(key: 'refresh-token', value: token);
+    await flutterSecureStorage.write(key: AppConstants.refreshTokenKey, value: token);
   }
 
   static Future<String?> getRefreshToken() async {
-    return await flutterSecureStorage.read(key: 'refresh-token');
+    return await flutterSecureStorage.read(key: AppConstants.refreshTokenKey);
   }
 
   static Future<String?> getAccessToken() async {
-    return await flutterSecureStorage.read(key: 'access-token');
+    return await flutterSecureStorage.read(key: AppConstants.accessTokenKey);
   }
 
   static Future<String?> getToken() async {
-    final accessToken = await flutterSecureStorage.read(key: 'access-token');
-
+    final accessToken = await getAccessToken();
     if (accessToken != null && accessToken.isNotEmpty) {
       final expiresAt = JwtDecoder.getExpirationDate(accessToken);
       if (expiresAt.isAfter(DateTime.now())) {
@@ -33,7 +33,7 @@ abstract class SecureStorage {
       }
     }
 
-    final refreshToken = await flutterSecureStorage.read(key: 'refresh-token');
+    final refreshToken = await getRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) return null;
 
     final newAccessToken = await authApi.refreshToken(

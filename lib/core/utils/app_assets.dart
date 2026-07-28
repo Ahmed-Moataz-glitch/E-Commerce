@@ -16,4 +16,6 @@ abstract class AppAssets {
       'assets/icons/edit_account_image_icon.svg';
   static const String successfulResetPasswordImage =
       'assets/images/security_lock_blue.png';
+  static const String defaultUserProfileImage =
+      'assets/images/default_user_profile_image.jpg';
 }

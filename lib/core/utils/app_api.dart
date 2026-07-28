@@ -7,5 +7,5 @@ abstract class AppApi {
   static const String categoriesEndpoint = '/api/v1/categories';
   static const String productsEndpoint = '/api/v1/products';
   static const String profileEndpoint = '/api/v1/auth/profile';
-  static const String uploadProfileImageEndpoint = '/api/v1/auth/profile';
+  static const String uploadProfileImageEndpoint = '/api/v1/files/upload';
 }
