@@ -1,3 +1,12 @@
+import 'package:e_commerce_app/features/account/data/api/account_api.dart';
+import 'package:e_commerce_app/features/account/data/repo/data_source/account_data_source_impl.dart';
+import 'package:e_commerce_app/features/account/data/repo/repo/account_repo_impl.dart';
+import 'package:e_commerce_app/features/account/domain/repo/data_source/account_data_source.dart';
+import 'package:e_commerce_app/features/account/domain/repo/repo/account_repo.dart';
+import 'package:e_commerce_app/features/account/domain/use_case/get_profile_use_case.dart';
+import 'package:e_commerce_app/features/account/domain/use_case/pick_image_use_case.dart';
+import 'package:e_commerce_app/features/account/domain/use_case/update_user_profile_image_use_case.dart';
+import 'package:e_commerce_app/features/account/presentation/view_model/account_cubit.dart';
 import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
 import 'package:e_commerce_app/features/auth/data/repo/data_source/auth_data_source_impl.dart';
 import 'package:e_commerce_app/features/auth/data/repo/repo/auth_repo_impl.dart';
@@ -157,6 +166,30 @@ Future<void> setupGetIt() async {
       removeProductsFromFavoritesUseCase:
           getIt<RemoveProductsFromFavoritesUseCase>(),
       getProductFromCartUseCase: getIt<GetFavoriteProductFromCartUseCase>(),
+    ),
+  );
+
+  getIt.registerSingleton<AccountApi>(AccountApi());
+  getIt.registerSingleton<AccountDataSource>(
+    AccountDataSourceImpl(getIt<AccountApi>()),
+  );
+  getIt.registerSingleton<AccountRepo>(
+    AccountRepoImpl(getIt<AccountDataSource>()),
+  );
+  getIt.registerSingleton<GetProfileUseCase>(
+    GetProfileUseCase(getIt<AccountRepo>()),
+  );
+  getIt.registerSingleton<UpdateUserProfileImageUseCase>(
+    UpdateUserProfileImageUseCase(getIt<AccountRepo>()),
+  );
+  getIt.registerSingleton<PickImageUseCase>(
+    PickImageUseCase(getIt<AccountRepo>()),
+  );
+  getIt.registerFactory<AccountCubit>(
+    () => AccountCubit(
+      getProfileUseCase: getIt<GetProfileUseCase>(),
+      updateUserProfileImageUseCase: getIt<UpdateUserProfileImageUseCase>(),
+      pickImageUseCase: getIt<PickImageUseCase>(),
     ),
   );
 }

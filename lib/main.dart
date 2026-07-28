@@ -28,6 +28,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   await Hive.initFlutter();
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +62,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
         title: AppConstants.appName,
         theme: ThemeData(
           scaffoldBackgroundColor: AppColors.background,
