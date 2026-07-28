@@ -16,8 +16,8 @@ class CartCubit extends Cubit<CartState> {
     required this.clearCartUseCase,
   }) : super(CartInitial());
 
-  void getCartProducts() {
-    final cartProducts = getCartProductsUseCase.call();
+  Future<void> getCartProducts() async {
+    final cartProducts = await getCartProductsUseCase.call();
     emit(GetCartProducts(cartProducts));
   }
 

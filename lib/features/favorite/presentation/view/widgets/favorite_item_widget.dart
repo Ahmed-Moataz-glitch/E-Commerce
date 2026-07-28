@@ -28,9 +28,18 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
   @override
   void initState() {
     super.initState();
-    productInCart = widget.favoriteCubit.getProductFromCart(
+    productInCart = null;
+    _loadCartState();
+  }
+
+  Future<void> _loadCartState() async {
+    final cartProduct = await widget.favoriteCubit.getProductFromCart(
       widget.favoriteProduct.id,
     );
+    if (!mounted) return;
+    setState(() {
+      productInCart = cartProduct;
+    });
   }
 
   @override
@@ -70,9 +79,7 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                   await widget.favoriteCubit.removeProductFromFavorites(
                     widget.favoriteProduct.id,
                   );
-                  setState(() {
-                    widget.favoriteCubit.getFavoriteProducts();
-                  });
+                  await widget.favoriteCubit.getFavoriteProducts();
                 },
                 child: Container(
                   padding: EdgeInsets.all(4.r),
@@ -111,23 +118,23 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
           bloc: widget.favoriteCubit,
           buildWhen: (previous, current) => current is ProductAddedToCart,
           builder: (context, state) {
-            if (state is ProductAddedToCart) {
-              productInCart = widget.favoriteCubit.getProductFromCart(
-                widget.favoriteProduct.id,
-              );
-            }
             return productInCart != null
                 ? MainButton(onPressed: null, text: 'Already in Cart')
                 : MainButton(
                     onPressed: () async {
-                      await widget.favoriteCubit.addProductToCart(
-                        CartItemModel(
-                          id: widget.favoriteProduct.id,
-                          images: widget.favoriteProduct.images,
-                          title: widget.favoriteProduct.title,
-                          price: widget.favoriteProduct.price,
-                        ),
+                      final cartProduct = CartItemModel(
+                        id: widget.favoriteProduct.id,
+                        images: widget.favoriteProduct.images,
+                        title: widget.favoriteProduct.title,
+                        price: widget.favoriteProduct.price,
                       );
+                      await widget.favoriteCubit.addProductToCart(
+                        cartProduct,
+                      );
+                      if (!mounted) return;
+                      setState(() {
+                        productInCart = cartProduct;
+                      });
                     },
                     text: 'Add to Cart',
                   );

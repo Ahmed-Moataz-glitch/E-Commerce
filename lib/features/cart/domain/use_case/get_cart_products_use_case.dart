@@ -5,7 +5,7 @@ class GetCartProductsUseCase {
   final CartRepo _cartRepo;
   GetCartProductsUseCase(this._cartRepo);
 
-  List<CartItemModel> call() {
+  Future<List<CartItemModel>> call() {
     return _cartRepo.getCartProducts();
   }
 }

@@ -5,7 +5,7 @@ class GetFavoriteProductsUseCase {
   final FavoriteRepo favoriteRepo;
   GetFavoriteProductsUseCase(this.favoriteRepo);
 
-  List<ProductModel> call() {
+  Future<List<ProductModel>> call() {
     return favoriteRepo.getFavoriteProducts();
   }
 }

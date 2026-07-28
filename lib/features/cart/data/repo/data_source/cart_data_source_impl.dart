@@ -7,8 +7,8 @@ class CartDataSourceImpl extends CartDataSource {
   CartDataSourceImpl(this._cartApi);
 
   @override
-  List<CartItemModel> getCartProducts() {
-    return _cartApi.getCartProducts();
+  Future<List<CartItemModel>> getCartProducts() async {
+    return await _cartApi.getCartProducts();
   }
   
   @override

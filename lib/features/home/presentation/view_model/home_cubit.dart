@@ -58,7 +58,7 @@ class HomeCubit extends Cubit<HomeState> {
     await saveProductUseCase.call(product);
   }
 
-  ProductModel? getSavedProduct(int productId) {
+  Future<ProductModel?> getSavedProduct(int productId) {
     return getSavedProductUseCase.call(productId);
   }
 
@@ -76,7 +76,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  CartItemModel? getProductFromCart(int productId) {
+  Future<CartItemModel?> getProductFromCart(int productId) {
     return getProductFromCartUseCase.call(productId);
   }
 }

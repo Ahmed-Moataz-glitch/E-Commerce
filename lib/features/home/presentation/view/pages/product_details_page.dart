@@ -34,10 +34,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   void initState() {
     super.initState();
     pageController = PageController();
-    isFavorite =
-        widget.homeCubit.getSavedProduct(widget.product.id)?.isFavorite ??
-        false;
-    productInCart = widget.homeCubit.getProductFromCart(widget.product.id);
+    isFavorite = false;
+    productInCart = null;
+    _loadLocalProductState();
+  }
+
+  Future<void> _loadLocalProductState() async {
+    final savedProduct = await widget.homeCubit.getSavedProduct(
+      widget.product.id,
+    );
+    final cartProduct = await widget.homeCubit.getProductFromCart(
+      widget.product.id,
+    );
+    if (!mounted) return;
+    setState(() {
+      isFavorite = savedProduct?.isFavorite ?? false;
+      productInCart = cartProduct;
+    });
   }
 
   @override
@@ -229,21 +242,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     buildWhen: (previous, current) =>
                         current is ProductAddedToCart,
                     builder: (context, state) {
-                      if (state is ProductAddedToCart) {
-                        productInCart = widget.homeCubit.getProductFromCart(widget.product.id);
-                      }
                       return productInCart != null
                           ? MainButton(onPressed: null, text: 'Already in Cart')
                           : MainButton(
                               onPressed: () async {
-                                await widget.homeCubit.addProductToCart(
-                                  CartItemModel(
-                                    id: widget.product.id,
-                                    images: widget.product.images,
-                                    title: widget.product.title,
-                                    price: widget.product.price,
-                                  ),
+                                final cartProduct = CartItemModel(
+                                  id: widget.product.id,
+                                  images: widget.product.images,
+                                  title: widget.product.title,
+                                  price: widget.product.price,
                                 );
+                                await widget.homeCubit.addProductToCart(
+                                  cartProduct,
+                                );
+                                if (!mounted) return;
+                                setState(() {
+                                  productInCart = cartProduct;
+                                });
                               },
                               text: 'Add to Cart',
                             );

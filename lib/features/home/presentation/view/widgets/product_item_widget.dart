@@ -27,7 +27,18 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
   @override
   void initState() {
     super.initState();
-    isFavorite = widget.homeCubit.getSavedProduct(widget.product.id)?.isFavorite ?? false;
+    isFavorite = false;
+    _loadFavoriteState();
+  }
+
+  Future<void> _loadFavoriteState() async {
+    final savedProduct = await widget.homeCubit.getSavedProduct(
+      widget.product.id,
+    );
+    if (!mounted) return;
+    setState(() {
+      isFavorite = savedProduct?.isFavorite ?? false;
+    });
   }
 
   @override
@@ -51,9 +62,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                       'homeCubit': widget.homeCubit,
                     },
                   ).then((_) {
-                    setState(() {
-                      isFavorite = widget.homeCubit.getSavedProduct(widget.product.id)?.isFavorite ?? false;
-                    });
+                    _loadFavoriteState();
                   });
                 },
                 child: CachedNetworkImage(

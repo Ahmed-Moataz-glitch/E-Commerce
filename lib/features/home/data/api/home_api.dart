@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:e_commerce_app/core/utils/app_api.dart';
-import 'package:e_commerce_app/core/utils/app_constants.dart';
+import 'package:e_commerce_app/core/utils/user_hive_boxes.dart';
 import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/categories_response_dto.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/home/data/model/products_response_dto.dart';
@@ -52,27 +51,27 @@ class HomeApi {
   }
 
   Future<void> saveProduct(ProductModel product) async {
-    final box = Hive.box<ProductModel>(AppConstants.favoritesBox);
+    final box = await UserHiveBoxes.favoritesBox();
     await box.put(product.id, product);
   }
 
-  ProductModel? getSavedProduct(int productId) {
-    final box = Hive.box<ProductModel>(AppConstants.favoritesBox);
+  Future<ProductModel?> getSavedProduct(int productId) async {
+    final box = await UserHiveBoxes.favoritesBox();
     return box.get(productId);
   }
 
   Future<void> deleteProduct(int productId) async {
-    final box = Hive.box<ProductModel>(AppConstants.favoritesBox);
+    final box = await UserHiveBoxes.favoritesBox();
     await box.delete(productId);
   }
 
   Future<void> addProductToCart(CartItemModel product) async {
-    final box = Hive.box<CartItemModel>(AppConstants.cartBox);
+    final box = await UserHiveBoxes.cartBox();
     await box.put(product.id, product);
   }
 
-  CartItemModel? getProductFromCart(int productId) {
-    final box = Hive.box<CartItemModel>(AppConstants.cartBox);
+  Future<CartItemModel?> getProductFromCart(int productId) async {
+    final box = await UserHiveBoxes.cartBox();
     return box.get(productId);
   }
 }

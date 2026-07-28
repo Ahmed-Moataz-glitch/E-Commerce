@@ -5,7 +5,7 @@ class GetProductFromCartUseCase {
   final HomeRepo _homeRepo;
   GetProductFromCartUseCase(this._homeRepo);
 
-  CartItemModel? call(int productId) {
+  Future<CartItemModel?> call(int productId) {
     return _homeRepo.getProductFromCart(productId);
   }
 }

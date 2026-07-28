@@ -5,9 +5,11 @@ import 'package:e_commerce_app/core/utils/app_constants.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/get_it.dart';
 import 'package:e_commerce_app/core/utils/secure_storage.dart';
+import 'package:e_commerce_app/core/utils/user_hive_boxes.dart';
 import 'package:e_commerce_app/core/views/pages/hello_page.dart';
 import 'package:e_commerce_app/core/views/pages/onboarding_page.dart';
 import 'package:e_commerce_app/core/views/widgets/app_section.dart';
+import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/pages/forget_password_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/pages/login_page.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/pages/register_page.dart';
@@ -31,14 +33,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Hive.registerAdapter<ProductModel>(ProductModelAdapter());
   Hive.registerAdapter<CartItemModel>(CartItemModelAdapter());
-  await Hive.openBox<ProductModel>(AppConstants.favoritesBox);
-  await Hive.openBox<CartItemModel>(AppConstants.cartBox);
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     publishableKey: AppConstants.publishableKey,
   );
   await setupGetIt();
-  final token = await SecureStorage.getAccessToken();
+  final token = await SecureStorage.getToken();
+  if (token != null) {
+    await getIt<AuthApi>().saveLoggedInUserId(token);
+  }
+  await UserHiveBoxes.openCurrentUserBoxes();
   debugPrint('Token: $token');
   runApp(MyApp(token: token));
 }

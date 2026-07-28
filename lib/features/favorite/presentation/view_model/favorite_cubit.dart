@@ -20,8 +20,8 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     required this.getProductFromCartUseCase,
   }) : super(FavoriteInitial());
 
-  void getFavoriteProducts() {
-    final favoriteProducts = getFavoriteProductsUseCase.call();
+  Future<void> getFavoriteProducts() async {
+    final favoriteProducts = await getFavoriteProductsUseCase.call();
     emit(GetFavoriteProducts(favoriteProducts));
   }
 
@@ -38,7 +38,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     await removeProductsFromFavoritesUseCase.call(productId);
   }
 
-  CartItemModel? getProductFromCart(int productId) {
+  Future<CartItemModel?> getProductFromCart(int productId) {
     return getProductFromCartUseCase.call(productId);
   }
 }

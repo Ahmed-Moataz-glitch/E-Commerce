@@ -24,6 +24,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   http: ^1.6.0
+  jwt_decoder: ^2.0.1
   pay_with_paymob: ^1.4.0
   pin_code_fields: ^9.4.0
   shared_preferences: ^2.5.5

@@ -21,8 +21,8 @@ class HomeRepoImpl extends HomeRepo {
   }
 
   @override
-  ProductModel? getSavedProduct(int productId) {
-    return _homeDataSource.getSavedProduct(productId);
+  Future<ProductModel?> getSavedProduct(int productId) async {
+    return await _homeDataSource.getSavedProduct(productId);
   }
 
   @override
@@ -41,7 +41,7 @@ class HomeRepoImpl extends HomeRepo {
   }
   
   @override
-  CartItemModel? getProductFromCart(int productId) {
-    return _homeDataSource.getProductFromCart(productId);
+  Future<CartItemModel?> getProductFromCart(int productId) async {
+    return await _homeDataSource.getProductFromCart(productId);
   }
 }

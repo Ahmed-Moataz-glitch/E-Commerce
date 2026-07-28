@@ -60,15 +60,15 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       body: BlocListener<AuthCubit, AuthState>(
         bloc: authCubit,
-        listenWhen: (previous, current) => 
-            current is RegisterLoading || 
-            current is RegisterSuccess || 
+        listenWhen: (previous, current) =>
+            current is RegisterLoading ||
+            current is RegisterSuccess ||
             current is RegisterError,
         listener: (context, state) {
-          if(state is RegisterLoading){
+          if (state is RegisterLoading) {
             AppDialogs.showLoadingDialog(context, title: 'Registering...');
           }
-          if(state is RegisterSuccess){
+          if (state is RegisterSuccess) {
             Navigator.of(context).pop();
             AppDialogs.showLoadingDialog(context, title: 'Sending OTP...');
             Navigator.of(context).pushNamed(
@@ -79,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
               },
             );
           }
-          if(state is RegisterError){
+          if (state is RegisterError) {
             Navigator.of(context).pop();
             AppDialogs.showSnackBar(
               context: context,
@@ -143,14 +143,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: size.height * 0.08),
                 MainButton(
                   onPressed: () async {
-                    await authCubit.register(
-                      RegisterRequestEntity(
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
-                      ),
-                    );
-                    await authCubit.sendOtpForNewUser(emailController.text.trim());
-                  }, 
+                    if (formKey.currentState!.validate()) {
+                      await authCubit.register(
+                        RegisterRequestEntity(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                        ),
+                      );
+                      // await authCubit.sendOtpForNewUser(emailController.text.trim());
+                    }
+                  },
                   text: 'Sign up',
                 ),
                 const Spacer(),
