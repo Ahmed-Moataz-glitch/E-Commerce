@@ -21,6 +21,7 @@ import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.
 import 'package:e_commerce_app/features/home/data/model/cart_item_model.dart';
 import 'package:e_commerce_app/features/home/data/model/product_model.dart';
 import 'package:e_commerce_app/features/home/domain/entities/products_response_entity.dart';
+import 'package:e_commerce_app/features/home/presentation/view/pages/home_page.dart';
 import 'package:e_commerce_app/features/home/presentation/view/pages/product_details_page.dart';
 import 'package:e_commerce_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:flutter/material.dart';
@@ -74,9 +75,7 @@ class MyApp extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const AppSection()),
             ];
           } else {
-            return [
-              MaterialPageRoute(builder: (context) => const OnboardingPage()),
-            ];
+            return [MaterialPageRoute(builder: (context) => LoginPage())];
           }
         },
         onGenerateRoute: (settings) {
