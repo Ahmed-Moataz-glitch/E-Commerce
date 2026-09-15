@@ -66,7 +66,9 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                   });
                 },
                 child: CachedNetworkImage(
-                  imageUrl: widget.product.images.first,
+                  imageUrl: widget.product.images.isNotEmpty
+                      ? widget.product.images.first
+                      : 'https://picsum.photos/800',
                   width: size.width * 0.5,
                   height: size.width * 0.4,
                   placeholder: (context, url) {
@@ -80,6 +82,16 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                       ),
                     );
                   },
+                  errorWidget: (context, url, error) => Container(
+                    width: size.width * 0.5,
+                    height: size.width * 0.4,
+                    color: AppColors.gray.withAlpha(50),
+                    child: Icon(
+                      Icons.image_not_supported,
+                      color: AppColors.gray,
+                      size: 28.sp,
+                    ),
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),

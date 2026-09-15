@@ -1,6 +1,6 @@
 const String emailRegexString =
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-const String passwordRegexString = r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@]{6,}$';
+const String passwordRegexString = r'^[a-zA-Z0-9]{4,}$';
 const String usernameRegexString = r'^[a-zA-Z0-9,.-]+$';
 
 abstract class Validator {
@@ -16,11 +16,12 @@ abstract class Validator {
   }
 
   static String? validatePassword(String? val) {
-    final RegExp passwordRegex = RegExp(passwordRegexString);
     if (val == null || val.trim().isEmpty) {
       return 'Password cannot be empty';
-    } else if (!passwordRegex.hasMatch(val)) {
-      return 'Enter a valid password';
+    } else if (val.length < 4) {
+      return 'Password must be at least 4 characters';
+    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(val)) {
+      return 'Password must contain only letters and numbers';
     } else {
       return null;
     }
@@ -37,8 +38,16 @@ abstract class Validator {
   }
 
   static String? validateName(String? val) {
-    if (val == null || val.isEmpty) {
+    if (val == null || val.trim().isEmpty) {
       return 'Name cannot be empty';
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateUsername(String? val) {
+    if (val == null || val.trim().isEmpty) {
+      return 'Username cannot be empty';
     } else {
       return null;
     }

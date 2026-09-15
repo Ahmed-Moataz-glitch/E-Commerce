@@ -31,12 +31,22 @@ class ProductsResponseDto {
     category = json['category'] != null
         ? Category.fromJson(json['category'])
         : null;
-    images = json['images'].cast<String>();
+    if (json['images'] is List) {
+      images = (json['images'] as List)
+          .map((e) => e.toString().replaceAll(RegExp(r'[\[\]"]'), '').trim())
+          .where((e) => e.isNotEmpty && e.startsWith('http'))
+          .toList();
+    } else {
+      images = [];
+    }
     creationAt = json['creationAt'];
     updatedAt = json['updatedAt'];
   }
 
   ProductsResponseEntity toEntity() {
+    final entityImages = (images != null && images!.isNotEmpty)
+        ? images!
+        : const ['https://picsum.photos/800'];
     return ProductsResponseEntity(
       id: id ?? 0,
       title: title ?? '',
@@ -53,7 +63,7 @@ class ProductsResponseDto {
               updatedAt: category!.updatedAt ?? '',
             )
           : const CategoryEntity(),
-      images: images ?? [],
+      images: entityImages,
       creationAt: creationAt ?? '',
       updatedAt: updatedAt ?? '',
     );

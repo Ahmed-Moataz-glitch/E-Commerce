@@ -7,9 +7,11 @@ import 'package:e_commerce_app/core/utils/app_dialogs.dart';
 import 'package:e_commerce_app/core/utils/app_toast.dart';
 import 'package:e_commerce_app/core/utils/get_it.dart';
 import 'package:e_commerce_app/core/views/widgets/main_button.dart';
+import 'package:e_commerce_app/core/utils/app_routes.dart';
+import 'package:e_commerce_app/core/utils/secure_storage.dart';
+import 'package:e_commerce_app/core/views/widgets/secondary_button.dart';
 import 'package:e_commerce_app/features/account/domain/entities/update_user_profile_image_request_entity.dart';
 import 'package:e_commerce_app/features/account/presentation/view_model/account_cubit.dart';
-import 'package:e_commerce_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,11 +76,12 @@ class _AccountPageState extends State<AccountPage> {
       builder: (context, state) {
         if (state is GetProfileSuccess) {
           final profileResponseEntity = state.profileResponseEntity;
-          return Padding(
-            padding: EdgeInsets.all(16.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(16.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 SizedBox(width: size.width, height: size.height * 0.1),
                 BlocConsumer<AccountCubit, AccountState>(
                   bloc: accountCubit,
@@ -146,12 +149,14 @@ class _AccountPageState extends State<AccountPage> {
                           CircleAvatar(
                             radius: 100.r,
                             backgroundImage:
-                                profileResponseEntity.avatar.isEmpty
-                                ? CachedNetworkImageProvider(
-                                    cacheKey: navigatorKey.toString(),
-                                    profileResponseEntity.avatar,
-                                  )
-                                : AssetImage(AppAssets.defaultUserProfileImage),
+                                profileResponseEntity.avatar.isNotEmpty
+                                    ? CachedNetworkImageProvider(
+                                        profileResponseEntity.avatar,
+                                      )
+                                    : const AssetImage(
+                                            AppAssets.defaultUserProfileImage,
+                                          )
+                                          as ImageProvider,
                           ),
                           Positioned(
                             bottom: 0,
@@ -346,10 +351,25 @@ class _AccountPageState extends State<AccountPage> {
                     );
                   },
                 ),
+                SizedBox(height: 16.h),
+                SecondaryButton(
+                  text: 'Logout',
+                  onPressed: () async {
+                    await SecureStorage.clearTokens();
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        AppRoutes.login,
+                        (route) => false,
+                      );
+                    }
+                  },
+                ),
+                SizedBox(height: 24.h),
               ],
             ),
-          );
-        } else {
+          ),
+        );
+      } else {
           return const SizedBox.shrink(); // Return an empty widget for other states
         }
       },

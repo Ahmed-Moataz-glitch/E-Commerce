@@ -64,9 +64,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             AppDialogs.showLoadingDialog(context, title: 'Reset Password...');
           }
           if (state is ResetPasswordSuccess) {
+            Navigator.of(context).pop();
             Navigator.of(context).pushNamed(AppRoutes.successfulResetPassword);
           }
           if (state is ResetPasswordError) {
+            Navigator.of(context).pop();
             AppToast.showToast(
               context: context,
               title: 'Error',
@@ -86,7 +88,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           child: Column(
             children: [
               Text(
-                'Please provide the email address that you used when signed up for your account',
+                'Please enter your new password to reset your account',
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),
@@ -99,11 +101,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     Text(
                       'New Password',
                       style: Theme.of(context).textTheme.bodyMedium,
-                      // style: TextStyle(
-                      //   fontSize: 18.sp,
-                      //   fontWeight: FontWeight.w500,
-                      //   color: AppColors.black,
-                      // ),
                     ),
                     SizedBox(height: size.height * 0.01),
                     TextFormFieldWidget(
@@ -111,7 +108,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       obscureText: true,
                       controller: newPasswordController,
                       validator: Validator.validatePassword,
-                      hintText: 'Create a new password',
+                      hintText: 'Letters & numbers only (min. 4)',
                     ),
                     SizedBox(height: size.height * 0.04),
                     Text(

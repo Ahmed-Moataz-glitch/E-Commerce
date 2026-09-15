@@ -1,30 +1,49 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:e_commerce_app/core/views/widgets/main_button.dart';
+import 'package:e_commerce_app/core/views/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:e_commerce_app/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('MainButton and SecondaryButton smoke test', (WidgetTester tester) async {
+    bool mainPressed = false;
+    bool secondaryPressed = false;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      ScreenUtilInit(
+        designSize: const Size(360, 690),
+        builder: (context, child) => MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                MainButton(
+                  text: 'Submit',
+                  onPressed: () {
+                    mainPressed = true;
+                  },
+                ),
+                SecondaryButton(
+                  text: 'Cancel',
+                  onPressed: () {
+                    secondaryPressed = true;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    expect(find.text('Submit'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+
+    await tester.tap(find.text('Submit'));
     await tester.pump();
+    expect(mainPressed, isTrue);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pump();
+    expect(secondaryPressed, isTrue);
   });
 }

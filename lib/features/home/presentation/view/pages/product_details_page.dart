@@ -157,31 +157,47 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 delegate: SliverChildListDelegate([
                   SizedBox(
                     height: size.height * 0.41,
-                    child: PageView.builder(
-                      controller: pageController,
-                      // physics: const NeverScrollableScrollPhysics(),
-                      onPageChanged: (value) {
-                        setState(() {});
-                      },
-                      itemCount: widget.product.images.length,
-                      itemBuilder: (context, index) {
-                        return ClipRRect(
-                          borderRadius: BorderRadiusGeometry.circular(16.r),
-                          child: CachedNetworkImage(
-                            imageUrl: widget.product.images[index],
-                            placeholder: (context, url) {
-                              return Shimmer.fromColors(
-                                baseColor: AppColors.gray.withAlpha(150),
-                                highlightColor: AppColors.gray.withAlpha(50),
-                                child: Container(
+                    child: Builder(
+                      builder: (context) {
+                        final displayImages = widget.product.images.isNotEmpty
+                            ? widget.product.images
+                            : const ['https://picsum.photos/800'];
+                        return PageView.builder(
+                          controller: pageController,
+                          onPageChanged: (value) {
+                            setState(() {});
+                          },
+                          itemCount: displayImages.length,
+                          itemBuilder: (context, index) {
+                            return ClipRRect(
+                              borderRadius: BorderRadiusGeometry.circular(16.r),
+                              child: CachedNetworkImage(
+                                imageUrl: displayImages[index],
+                                placeholder: (context, url) {
+                                  return Shimmer.fromColors(
+                                    baseColor: AppColors.gray.withAlpha(150),
+                                    highlightColor: AppColors.gray.withAlpha(50),
+                                    child: Container(
+                                      width: size.width * 0.5,
+                                      height: size.width * 0.4,
+                                      color: AppColors.gray,
+                                    ),
+                                  );
+                                },
+                                errorWidget: (context, url, error) => Container(
                                   width: size.width * 0.5,
                                   height: size.width * 0.4,
-                                  color: AppColors.gray,
+                                  color: AppColors.gray.withAlpha(50),
+                                  child: Icon(
+                                    Icons.image_not_supported,
+                                    color: AppColors.gray,
+                                    size: 36.sp,
+                                  ),
                                 ),
-                              );
-                            },
-                            fit: BoxFit.cover,
-                          ),
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -191,13 +207,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     alignment: Alignment.center,
                     child: SmoothPageIndicator(
                       controller: pageController,
-                      count: widget.product.images.length,
+                      count: widget.product.images.isNotEmpty
+                          ? widget.product.images.length
+                          : 1,
                       axisDirection: Axis.horizontal,
                       effect: WormEffect(
                         dotWidth: 10.w,
                         dotHeight: 10.h,
-                        dotColor: Color(0xffAFAFAF),
-                        activeDotColor: Color(0xff212121),
+                        dotColor: const Color(0xffAFAFAF),
+                        activeDotColor: const Color(0xff212121),
                       ),
                     ),
                   ),

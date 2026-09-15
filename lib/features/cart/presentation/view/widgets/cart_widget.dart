@@ -75,7 +75,9 @@ class _CartWidgetState extends State<CartWidget> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12.r),
                               child: CachedNetworkImage(
-                                imageUrl: product.images.first,
+                                imageUrl: product.images.isNotEmpty
+                                    ? product.images.first
+                                    : 'https://picsum.photos/800',
                                 width: size.width * 0.2,
                                 height: size.height * 0.1,
                                 placeholder: (context, url) {
@@ -91,6 +93,16 @@ class _CartWidgetState extends State<CartWidget> {
                                     ),
                                   );
                                 },
+                                errorWidget: (context, url, error) => Container(
+                                  width: size.width * 0.2,
+                                  height: size.height * 0.1,
+                                  color: AppColors.gray.withAlpha(50),
+                                  child: Icon(
+                                    Icons.image_not_supported,
+                                    color: AppColors.gray,
+                                    size: 24.sp,
+                                  ),
+                                ),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -154,12 +166,13 @@ class _CartWidgetState extends State<CartWidget> {
                                           spacing: 12.w,
                                           children: [
                                             GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  if (product.itemCount > 1) {
+                                              onTap: () async {
+                                                if (product.itemCount > 1) {
+                                                  setState(() {
                                                     product.itemCount--;
-                                                  }
-                                                });
+                                                  });
+                                                  await product.save();
+                                                }
                                               },
                                               child: Icon(
                                                 Icons.remove,
@@ -174,12 +187,13 @@ class _CartWidgetState extends State<CartWidget> {
                                               ),
                                             ),
                                             GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  if (product.itemCount < 20) {
+                                              onTap: () async {
+                                                if (product.itemCount < 20) {
+                                                  setState(() {
                                                     product.itemCount++;
-                                                  }
-                                                });
+                                                  });
+                                                  await product.save();
+                                                }
                                               },
                                               child: Icon(
                                                 Icons.add,

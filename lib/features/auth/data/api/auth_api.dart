@@ -6,6 +6,7 @@ import 'package:e_commerce_app/core/utils/user_hive_boxes.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_response_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/refresh_token_response_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_response_dto.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthApi {
   final supabase = Supabase.instance.client;
 
+  String _parseErrorMessage(http.Response response, String fallback) {
+    try {
+      final json = jsonDecode(response.body);
+      if (json is Map) {
+        final message = json['message'];
+        if (message is List && message.isNotEmpty) {
+          return message.join(', ');
+        } else if (message is String && message.isNotEmpty) {
+          return message;
+        }
+      }
+    } catch (_) {}
+    return '$fallback. Status code: ${response.statusCode}';
+  }
+
   Future<ApiResult<RegisterResponseDto>> register(
     RegisterRequestDto registerRequestDto,
   ) async {
@@ -25,7 +41,7 @@ class AuthApi {
       var response = await http.post(url, body: registerRequestDto.toJson());
       if (response.statusCode != 201) {
         return ApiError<RegisterResponseDto>(
-          'Failed to register. Status code: ${response.statusCode}',
+          _parseErrorMessage(response, 'Failed to register'),
         );
       }
       final responseBody = response.body;
@@ -48,7 +64,7 @@ class AuthApi {
       var response = await http.post(url, body: loginRequestDto.toJson());
       if (response.statusCode != 201) {
         return ApiError<LoginResponseDto>(
-          'Failed to login. Status code: ${response.statusCode}',
+          _parseErrorMessage(response, 'Failed to login'),
         );
       }
       final responseBody = response.body;
@@ -64,26 +80,39 @@ class AuthApi {
     }
   }
 
-  Future refreshToken(RefreshTokenRequestDto refreshTokenRequestDto) async {
+  Future<ApiResult<RefreshTokenResponseDto>> refreshToken(
+    RefreshTokenRequestDto refreshTokenRequestDto,
+  ) async {
     final url = Uri.https(AppApi.baseUrl, AppApi.refreshTokenEndpoint);
     try {
       var response = await http.post(
         url,
         body: refreshTokenRequestDto.toJson(),
       );
-      if (response.statusCode != 201) {
-        return 'Failed to refresh token. Status code: ${response.statusCode}';
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        return ApiError<RefreshTokenResponseDto>(
+          _parseErrorMessage(response, 'Failed to refresh token'),
+        );
       }
       final responseBody = response.body;
       final json = jsonDecode(responseBody);
-      await SecureStorage.saveAccessToken(json['access_token']);
-      await SecureStorage.saveRefreshToken(json['refresh_token']);
+      final refreshTokenResponse = RefreshTokenResponseDto.fromJson(json);
+      if (refreshTokenResponse.accessToken != null) {
+        await SecureStorage.saveAccessToken(refreshTokenResponse.accessToken!);
+      }
+      if (refreshTokenResponse.refreshToken != null) {
+        await SecureStorage.saveRefreshToken(
+          refreshTokenResponse.refreshToken!,
+        );
+      }
       await FlutterSharedPreferences.instance.removeUserId();
-      await saveLoggedInUserId(json['access_token']);
+      if (refreshTokenResponse.accessToken != null) {
+        await saveLoggedInUserId(refreshTokenResponse.accessToken!);
+      }
       await UserHiveBoxes.openCurrentUserBoxes();
-      return json['access_token'];
+      return ApiSuccess<RefreshTokenResponseDto>(refreshTokenResponse);
     } catch (e) {
-      return e.toString();
+      return ApiError<RefreshTokenResponseDto>(e.toString());
     }
   }
 
@@ -102,7 +131,7 @@ class AuthApi {
       );
       if (response.statusCode != 200) {
         return ApiError<ResetPasswordResponseDto>(
-          'Failed to reset password. Status code: ${response.statusCode}',
+          _parseErrorMessage(response, 'Failed to reset password'),
         );
       }
       final responseBody = response.body;

@@ -136,12 +136,14 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: size.height * 0.08),
                 MainButton(
                   onPressed: () async {
-                    await authCubit.login(
-                      LoginRequestEntity(
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
-                      ),
-                    );
+                    if (formKey.currentState!.validate()) {
+                      await authCubit.login(
+                        LoginRequestEntity(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                        ),
+                      );
+                    }
                   },
                   text: 'Login',
                 ),

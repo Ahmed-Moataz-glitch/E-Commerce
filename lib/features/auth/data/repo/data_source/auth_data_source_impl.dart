@@ -2,12 +2,16 @@ import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/login_response_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/refresh_token_response_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/register_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/register_response_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/reset_password_response_dto.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_response_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_request_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/reset_password_request_entity.dart';
@@ -37,6 +41,23 @@ class AuthDataSourceImpl extends AuthDataSource {
   }
 
   @override
+  Future<ApiResult<RefreshTokenResponseEntity>> refreshToken(
+    RefreshTokenRequestEntity refreshTokenRequestEntity,
+  ) async {
+    final result = await _authApi.refreshToken(
+      RefreshTokenRequestDto(
+        refreshToken: refreshTokenRequestEntity.refreshToken,
+      ),
+    );
+    switch (result) {
+      case ApiSuccess<RefreshTokenResponseDto>():
+        return ApiSuccess<RefreshTokenResponseEntity>(result.data?.toEntity());
+      case ApiError<RefreshTokenResponseDto>():
+        return ApiError<RefreshTokenResponseEntity>(result.message);
+    }
+  }
+
+  @override
   Future<ApiResult<RegisterResponseEntity>> register(
     RegisterRequestEntity registerRequestEntity,
   ) async {
@@ -45,6 +66,9 @@ class AuthDataSourceImpl extends AuthDataSource {
         email: registerRequestEntity.email,
         password: registerRequestEntity.password,
         name: registerRequestEntity.name,
+        avatar: registerRequestEntity.avatar.isNotEmpty
+            ? registerRequestEntity.avatar
+            : 'https://picsum.photos/800',
       ),
     );
     switch (result) {

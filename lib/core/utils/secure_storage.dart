@@ -1,6 +1,9 @@
 import 'package:e_commerce_app/core/utils/app_constants.dart';
+import 'package:e_commerce_app/core/utils/shared_preferences.dart';
+import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/auth/data/api/auth_api.dart';
 import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/refresh_token_response_dto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -24,6 +27,12 @@ abstract class SecureStorage {
     return await flutterSecureStorage.read(key: AppConstants.accessTokenKey);
   }
 
+  static Future<void> clearTokens() async {
+    await flutterSecureStorage.delete(key: AppConstants.accessTokenKey);
+    await flutterSecureStorage.delete(key: AppConstants.refreshTokenKey);
+    await FlutterSharedPreferences.instance.removeUserId();
+  }
+
   static Future<String?> getToken() async {
     final accessToken = await getAccessToken();
     if (accessToken != null && accessToken.isNotEmpty) {
@@ -36,15 +45,14 @@ abstract class SecureStorage {
     final refreshToken = await getRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) return null;
 
-    final newAccessToken = await authApi.refreshToken(
+    final result = await authApi.refreshToken(
       RefreshTokenRequestDto(refreshToken: refreshToken),
     );
 
-    // optional but recommended:
-    if (newAccessToken != null) {
-      await saveAccessToken(newAccessToken);
+    if (result is ApiSuccess<RefreshTokenResponseDto>) {
+      return result.data?.accessToken;
     }
 
-    return newAccessToken;
+    return null;
   }
 }

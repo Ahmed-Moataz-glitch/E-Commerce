@@ -53,7 +53,9 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
               child: CachedNetworkImage(
-                imageUrl: widget.favoriteProduct.images.first,
+                imageUrl: widget.favoriteProduct.images.isNotEmpty
+                    ? widget.favoriteProduct.images.first
+                    : 'https://picsum.photos/800',
                 width: size.width * 0.5,
                 height: size.height * 0.22,
                 placeholder: (context, url) {
@@ -67,6 +69,16 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                     ),
                   );
                 },
+                errorWidget: (context, url, error) => Container(
+                  width: size.width * 0.5,
+                  height: size.height * 0.22,
+                  color: AppColors.gray.withAlpha(50),
+                  child: Icon(
+                    Icons.image_not_supported,
+                    color: AppColors.gray,
+                    size: 28.sp,
+                  ),
+                ),
                 fit: BoxFit.cover,
               ),
             ),

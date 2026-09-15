@@ -1,6 +1,8 @@
 import 'package:e_commerce_app/core/views/widgets/api_result.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/login_response_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_request_entity.dart';
+import 'package:e_commerce_app/features/auth/domain/entities/refresh_token_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_response_entity.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/reset_password_request_entity.dart';
@@ -17,6 +19,13 @@ class AuthRepoImpl extends AuthRepo {
     LoginRequestEntity loginRequestEntity,
   ) async {
     return await _authDataSource.login(loginRequestEntity);
+  }
+
+  @override
+  Future<ApiResult<RefreshTokenResponseEntity>> refreshToken(
+    RefreshTokenRequestEntity refreshTokenRequestEntity,
+  ) async {
+    return await _authDataSource.refreshToken(refreshTokenRequestEntity);
   }
 
   @override

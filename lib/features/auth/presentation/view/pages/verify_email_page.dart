@@ -38,7 +38,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isLightMode = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,6 +45,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
+        backgroundColor: AppColors.transparent,
+        elevation: 0,
       ),
       body: BlocListener<AuthCubit, AuthState>(
         bloc: widget.authCubit,
@@ -88,16 +89,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           child: Column(
             children: [
               Text(
-                'Verify Your Email',
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  color: isLightMode ? null : AppColors.primary.withAlpha(200),
-                ),
+                'Please provide the email address that you used when signed up for your account',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
-                // style: TextStyle(
-                //   fontSize: 18.sp,
-                //   fontWeight: FontWeight.w400,
-                //   color: AppColors.secondary.withValues(alpha: 0.8),
-                // ),
               ),
               SizedBox(height: size.height * 0.05),
               Text.rich(
@@ -109,7 +103,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                     fontWeight: FontWeight.w400,
                     color: AppColors.black,
                   ),
-                  // style: TextStyle(fontSize: 16.sp, color: AppColors.black),
                   children: [
                     TextSpan(
                       text: widget.email ?? 'ahmedmoataz123@gmail.com',
@@ -118,11 +111,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                         fontWeight: FontWeight.w700,
                         color: AppColors.black,
                       ),
-                      // style: TextStyle(
-                      //   fontSize: 18.sp,
-                      //   color: AppColors.black,
-                      //   fontWeight: FontWeight.bold,
-                      // ),
                     ),
                   ],
                 ),
@@ -133,8 +121,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               MainButton(
                 text: 'Verify',
                 onPressed: () async {
-                  // debugPrint('Verification code: ${verificationController.text}');
-                  // debugPrint('Email: $email, OTP: ${otpController.text}');
                   await widget.authCubit.validateOtp(
                     email: widget.email ?? '',
                     otp: otpController.text.trim(),
@@ -148,18 +134,20 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 },
                 child: Text.rich(
                   TextSpan(
-                    text: 'Didn\'t receive the code?',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    // style: TextStyle(fontSize: 16.sp, color: AppColors.black),
+                    text: 'Didn\'t receive the code? ',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: AppColors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
                     children: [
                       TextSpan(
-                        text: ' Resend',
-                        style: Theme.of(context).textTheme.bodySmall,
-                        // style: TextStyle(
-                        //   fontSize: 16.sp,
-                        //   fontWeight: FontWeight.bold,
-                        //   color: AppColors.blue,
-                        // ),
+                        text: 'Resend Code',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ],
                   ),

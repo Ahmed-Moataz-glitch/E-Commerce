@@ -4,5 +4,10 @@ class RegisterRequestEntity {
   String password;
   String avatar;
 
-  RegisterRequestEntity({this.name = '', this.email = '', this.password = '', this.avatar = ''});
+  RegisterRequestEntity({
+    this.name = '',
+    this.email = '',
+    this.password = '',
+    this.avatar = 'https://picsum.photos/800',
+  });
 }

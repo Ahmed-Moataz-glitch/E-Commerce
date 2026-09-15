@@ -196,12 +196,7 @@ class _HomePageState extends State<HomePage>
                                                 .where(
                                                   (product) =>
                                                       product.category.name ==
-                                                          category.name &&
-                                                      product.images.first
-                                                              .contains(
-                                                                'placehold',
-                                                              ) ==
-                                                          false,
+                                                      category.name,
                                                 )
                                                 .toList();
                                             if(products.isEmpty) {
