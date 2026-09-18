@@ -3,6 +3,7 @@ import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_dialogs.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/views/widgets/main_button.dart';
+import 'package:e_commerce_app/core/views/widgets/validator.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/widgets/timer_widget.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/widgets/verify_code_widget.dart';
 import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.dart';
@@ -58,11 +59,15 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
             current is SendingOtp ||
             current is OtpSent ||
             current is SendingOtpError ||
+            current is VerifyingOtp ||
             current is OtpVerified ||
             current is VerifyingOtpError,
         listener: (context, state) {
           if (state is SendingOtp) {
             AppDialogs.showLoadingDialog(context, title: 'Resending OTP...');
+          }
+          if (state is VerifyingOtp) {
+            AppDialogs.showLoadingDialog(context, title: 'Verifying OTP...');
           }
           if (state is OtpSent) {
             Navigator.of(context).pop();
@@ -77,6 +82,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
             );
           }
           if (state is OtpVerified) {
+            Navigator.of(context).pop();
             Navigator.of(context).pushNamed(
               AppRoutes.resetPassword,
               arguments: {
@@ -87,6 +93,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
             );
           }
           if (state is VerifyingOtpError) {
+            Navigator.of(context).pop();
             AppDialogs.showSnackBar(
               context: context,
               message: state.message,
@@ -137,18 +144,19 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
               MainButton(
                 text: 'Verify',
                 onPressed: () async {
-                  // debugPrint('Verification code: ${verificationController.text}');
-                  // await widget.authCubit.validateOtp(
-                  //   email: widget.email ?? '',
-                  //   otp: otpController.text.trim(),
-                  // );
-                  Navigator.of(context).pushNamed(
-                    AppRoutes.resetPassword,
-                    arguments: {
-                      'authCubit': widget.authCubit,
-                      'email': widget.email ?? '',
-                      'otp': otpController.text.trim(),
-                    },
+                  final otp = otpController.text.trim();
+                  final error = Validator.validateCode(otp);
+                  if (error != null) {
+                    AppDialogs.showSnackBar(
+                      context: context,
+                      message: error,
+                      isError: true,
+                    );
+                    return;
+                  }
+                  await widget.authCubit.validateOtp(
+                    email: widget.email ?? '',
+                    otp: otp,
                   );
                 },
               ),

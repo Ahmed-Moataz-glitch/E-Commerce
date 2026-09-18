@@ -11,18 +11,28 @@ class TimerWidget extends StatefulWidget {
 
 class _TimerWidgetState extends State<TimerWidget> {
   int secondsRemaining = 59;
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if(secondsRemaining == 0) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsRemaining == 0) {
         timer.cancel();
       } else {
-        setState(() {
-          secondsRemaining--;
-        });
+        if (mounted) {
+          setState(() {
+            secondsRemaining--;
+          });
+        }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override

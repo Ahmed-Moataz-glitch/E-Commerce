@@ -123,6 +123,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> validateOtp({required String email, required String otp}) async {
+    emit(VerifyingOtp());
     try {
       final result = await validateOtpUseCase.call(email: email, otp: otp);
       switch (result) {

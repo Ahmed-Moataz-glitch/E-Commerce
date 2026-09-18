@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:e_commerce_app/core/views/widgets/validator.dart';
 import 'package:e_commerce_app/features/auth/data/model/refresh_token_request_dto.dart';
 import 'package:e_commerce_app/features/auth/data/model/refresh_token_response_dto.dart';
+import 'package:e_commerce_app/features/auth/data/model/register_request_dto.dart';
 import 'package:e_commerce_app/features/auth/domain/entities/register_request_entity.dart';
 
 void main() {
@@ -32,7 +33,37 @@ void main() {
         email: 'john@mail.com',
         password: 'password123',
       );
-      expect(entity.avatar, 'https://picsum.photos/800');
+      expect(entity.avatar, 'https://api.lorem.space/image/face?w=640&h=480');
+    });
+
+    test('RegisterRequestEntity retains custom avatar', () {
+      final entity = RegisterRequestEntity(
+        name: 'Ahmed',
+        email: 'ahmed@gmail.com',
+        password: '123456',
+        avatar: 'https://api.lorem.space/image/face?w=640&h=480',
+      );
+      expect(entity.avatar, 'https://api.lorem.space/image/face?w=640&h=480');
+    });
+
+    test('RegisterRequestDto toJson includes avatar and required fields', () {
+      final dto = RegisterRequestDto(
+        name: 'Ahmed',
+        email: 'ahmed@gmail.com',
+        password: '123456',
+        avatar: 'https://api.lorem.space/image/face?w=640&h=480',
+      );
+      final json = dto.toJson();
+      expect(json['name'], 'Ahmed');
+      expect(json['email'], 'ahmed@gmail.com');
+      expect(json['password'], '123456');
+      expect(json['avatar'], 'https://api.lorem.space/image/face?w=640&h=480');
+
+      final entity = dto.toEntity();
+      expect(entity.name, 'Ahmed');
+      expect(entity.email, 'ahmed@gmail.com');
+      expect(entity.password, '123456');
+      expect(entity.avatar, 'https://api.lorem.space/image/face?w=640&h=480');
     });
 
     test('Validator.validateUsername validates properly', () {
@@ -51,6 +82,14 @@ void main() {
       expect(Validator.validatePassword('ahmed123Aa'), null);
       expect(Validator.validatePassword('123456'), null);
       expect(Validator.validatePassword('Pass123'), null);
+    });
+
+    test('Validator.validateCode validates OTP digits count', () {
+      expect(Validator.validateCode(''), 'Code cannot be empty');
+      expect(Validator.validateCode(null), 'Code cannot be empty');
+      expect(Validator.validateCode('12345'), 'Code should be at least 6 digits');
+      expect(Validator.validateCode('123456'), null);
+      expect(Validator.validateCode('1234567'), null);
     });
   });
 }

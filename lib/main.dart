@@ -24,6 +24,7 @@ import 'package:e_commerce_app/features/home/domain/entities/products_response_e
 import 'package:e_commerce_app/features/home/presentation/view/pages/product_details_page.dart';
 import 'package:e_commerce_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -46,6 +47,13 @@ void main() async {
   }
   await UserHiveBoxes.openCurrentUserBoxes();
   debugPrint('Token: $token');
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: AppColors.background,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+    ),
+  );
   runApp(MyApp(token: token));
 }
 
@@ -75,10 +83,7 @@ class MyApp extends StatelessWidget {
             ];
           } else {
             return [
-              MaterialPageRoute(
-                builder: (context) =>
-                    VerifyEmailPage(email: '', authCubit: getIt<AuthCubit>()),
-              ),
+              MaterialPageRoute(builder: (context) => const OnboardingPage()),
             ];
           }
         },

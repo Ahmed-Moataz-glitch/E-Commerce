@@ -38,7 +38,11 @@ class AuthApi {
   ) async {
     final url = Uri.https(AppApi.baseUrl, AppApi.registerEndpoint);
     try {
-      var response = await http.post(url, body: registerRequestDto.toJson());
+      var response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(registerRequestDto.toJson()),
+      );
       if (response.statusCode != 201) {
         return ApiError<RegisterResponseDto>(
           _parseErrorMessage(response, 'Failed to register'),
@@ -147,16 +151,20 @@ class AuthApi {
   Future<void> sendOtpForNewUser(String email) async {
     try {
       await supabase.auth.signInWithOtp(email: email, shouldCreateUser: true);
+    } on AuthException catch (e) {
+      throw e.message;
     } catch (e) {
-      throw 'Error from send OTP for new user: $e';
+      throw e.toString();
     }
   }
 
   Future<void> sendOtpForExistingUser(String email) async {
     try {
       await supabase.auth.signInWithOtp(email: email, shouldCreateUser: false);
+    } on AuthException catch (e) {
+      throw e.message;
     } catch (e) {
-      throw 'Error from send OTP for existing user: $e';
+      throw e.toString();
     }
   }
 
@@ -167,9 +175,11 @@ class AuthApi {
         email: email,
         token: otp,
       );
-      return result.session != null;
+      return result.session != null || result.user != null;
+    } on AuthException catch (e) {
+      throw e.message;
     } catch (e) {
-      throw 'Error from validate OTP: $e';
+      throw e.toString();
     }
   }
 

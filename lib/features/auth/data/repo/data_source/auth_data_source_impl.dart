@@ -68,7 +68,7 @@ class AuthDataSourceImpl extends AuthDataSource {
         name: registerRequestEntity.name,
         avatar: registerRequestEntity.avatar.isNotEmpty
             ? registerRequestEntity.avatar
-            : 'https://picsum.photos/800',
+            : 'https://api.lorem.space/image/face?w=640&h=480',
       ),
     );
     switch (result) {

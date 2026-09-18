@@ -72,10 +72,11 @@ class _RegisterPageState extends State<RegisterPage> {
           }
           if (state is RegisterSuccess) {
             Navigator.of(context).pop();
+            final email = emailController.text.trim();
             Navigator.of(context).pushNamed(
               AppRoutes.verifyEmail,
               arguments: {
-                'email': emailController.text.trim(),
+                'email': email,
                 'authCubit': authCubit,
               },
             );
@@ -168,9 +169,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             name: usernameController.text.trim(),
                             email: emailController.text.trim(),
                             password: passwordController.text.trim(),
+                            avatar: 'https://api.lorem.space/image/face?w=640&h=480',
                           ),
                         );
-                        // await authCubit.sendOtpForNewUser(emailController.text.trim());
                       }
                     },
                     text: 'Sign up',

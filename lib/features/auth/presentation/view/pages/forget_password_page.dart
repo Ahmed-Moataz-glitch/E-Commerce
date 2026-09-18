@@ -57,6 +57,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
             AppDialogs.showLoadingDialog(context, title: 'Sending OTP...');
           }
           if (state is OtpSent) {
+            Navigator.of(context).pop();
             Navigator.of(context).pushNamed(
               AppRoutes.verifyCode,
               arguments: {
@@ -109,18 +110,11 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     MainButton(
                       text: 'Send OTP',
                       onPressed: () async {
-                        // if (formKey.currentState!.validate()) {
-                        //   await widget.authCubit.sendOtpForExistingUser(
-                        //     emailController.text.trim(),
-                        //   );
-                        // }
-                        Navigator.of(context).pushNamed(
-                          AppRoutes.verifyCode,
-                          arguments: {
-                            'email': emailController.text.trim(),
-                            'authCubit': widget.authCubit,
-                          },
-                        );
+                        if (formKey.currentState!.validate()) {
+                          await widget.authCubit.sendOtpForExistingUser(
+                            emailController.text.trim(),
+                          );
+                        }
                       },
                     ),
                   ],

@@ -8,6 +8,6 @@ class RegisterRequestEntity {
     this.name = '',
     this.email = '',
     this.password = '',
-    this.avatar = 'https://picsum.photos/800',
+    this.avatar = 'https://api.lorem.space/image/face?w=640&h=480',
   });
 }

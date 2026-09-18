@@ -59,126 +59,132 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: BlocListener<AuthCubit, AuthState>(
         bloc: authCubit,
-        listenWhen: (previous, current) => 
+        listenWhen: (previous, current) =>
             current is LoginLoading ||
             current is LoginSuccess ||
             current is LoginError,
         listener: (context, state) {
-          if(state is LoginLoading) {
+          if (state is LoginLoading) {
             AppDialogs.showLoadingDialog(context, title: 'Logging in...');
           }
-          if(state is LoginSuccess) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              AppRoutes.appSection,
-              (route) => false,
+          if (state is LoginSuccess) {
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(AppRoutes.appSection, (route) => false);
+          }
+          if (state is LoginError) {
+            Navigator.of(context).pop();
+            AppToast.showToast(
+              context: context,
+              title: 'Error',
+              description: state.message,
+              type: ToastificationType.error,
             );
           }
-          if(state is LoginError) {
-            Navigator.of(context).pop();
-            AppToast.showToast(context: context, title: 'Error', description: state.message, type: ToastificationType.error);
-          }
         },
-        child: Form(
-          key: formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 36.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Email',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                TextFormFieldWidget(
-                  controller: emailController,
-                  validator: Validator.validateEmail,
-                  hintText: 'youusefmhmd30@gmail.com',
-                ),
-                SizedBox(height: size.height * 0.04),
-                Text(
-                  'Password',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                TextFormFieldWidget(
-                  controller: passwordController,
-                  validator: Validator.validatePassword,
-                  hintText: 'Enter your password',
-                  isPassword: true,
-                  obscureText: true,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        AppRoutes.forgetPassword,
-                        arguments: authCubit,
-                      );
-                    },
-                    child: Text(
-                      'Forget password?',
-                      style: TextStyle(
-                        color: AppColors.black.withAlpha(200),
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+        child: SingleChildScrollView(
+          child: Form(
+            key: formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 36.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Email',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                ),
-                SizedBox(height: size.height * 0.08),
-                MainButton(
-                  onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      await authCubit.login(
-                        LoginRequestEntity(
-                          email: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                        ),
-                      );
-                    }
-                  },
-                  text: 'Login',
-                ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(
-                        context,
-                      ).pushReplacementNamed(AppRoutes.register);
-                    },
-                    child: Text.rich(
-                      TextSpan(
-                        text: 'Don\'t have an account? ',
+                  SizedBox(height: 8.h),
+                  TextFormFieldWidget(
+                    controller: emailController,
+                    validator: Validator.validateEmail,
+                    hintText: 'youusefmhmd30@gmail.com',
+                  ),
+                  SizedBox(height: size.height * 0.04),
+                  Text(
+                    'Password',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  TextFormFieldWidget(
+                    controller: passwordController,
+                    validator: Validator.validatePassword,
+                    hintText: 'Enter your password',
+                    isPassword: true,
+                    obscureText: true,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          AppRoutes.forgetPassword,
+                          arguments: authCubit,
+                        );
+                      },
+                      child: Text(
+                        'Forget password?',
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          color: AppColors.black.withAlpha(200),
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.primary,
                         ),
-                        children: [
-                          TextSpan(
-                            text: 'sign up',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: size.height * 0.08),
+                  MainButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        await authCubit.login(
+                          LoginRequestEntity(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          ),
+                        );
+                      }
+                    },
+                    text: 'Login',
+                  ),
+                  SizedBox(height: size.height * 0.338),
+                  Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                        ).pushReplacementNamed(AppRoutes.register);
+                      },
+                      child: Text.rich(
+                        TextSpan(
+                          text: 'Don\'t have an account? ',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.primary,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'sign up',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

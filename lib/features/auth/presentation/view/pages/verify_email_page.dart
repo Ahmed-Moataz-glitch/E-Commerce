@@ -3,6 +3,7 @@ import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_dialogs.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/views/widgets/main_button.dart';
+import 'package:e_commerce_app/core/views/widgets/validator.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/widgets/timer_widget.dart';
 import 'package:e_commerce_app/features/auth/presentation/view/widgets/verify_code_widget.dart';
 import 'package:e_commerce_app/features/auth/presentation/view_model/auth_cubit.dart';
@@ -14,7 +15,11 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class VerifyEmailPage extends StatefulWidget {
   final AuthCubit authCubit;
   final String? email;
-  const VerifyEmailPage({super.key, required this.email, required this.authCubit});
+  const VerifyEmailPage({
+    super.key,
+    required this.email,
+    required this.authCubit,
+  });
 
   @override
   State<VerifyEmailPage> createState() => _VerifyEmailPageState();
@@ -27,6 +32,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   void initState() {
     super.initState();
     otpController = PinInputController();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await widget.authCubit.sendOtpForNewUser(widget.email ?? '');
+    });
   }
 
   @override
@@ -51,17 +59,40 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       body: BlocListener<AuthCubit, AuthState>(
         bloc: widget.authCubit,
         listenWhen: (previous, current) =>
+            current is SendingOtp ||
+            current is OtpSent ||
+            current is SendingOtpError ||
             current is ReSendingOtp ||
             current is OtpReSent ||
             current is ReSendingOtpError ||
+            current is VerifyingOtp ||
             current is OtpVerified ||
             current is VerifyingOtpError,
         listener: (context, state) {
+          if (state is SendingOtp) {
+            AppDialogs.showLoadingDialog(context, title: 'Sending OTP...');
+          }
           if (state is ReSendingOtp) {
             AppDialogs.showLoadingDialog(context, title: 'Resending OTP...');
           }
-          if (state is OtpReSent) {
+          if (state is VerifyingOtp) {
+            AppDialogs.showLoadingDialog(context, title: 'Verifying OTP...');
+          }
+          if (state is OtpSent) {
+            Navigator.of(context).pop();
             AppDialogs.showSnackBar(context: context, message: state.message);
+          }
+          if (state is OtpReSent) {
+            Navigator.of(context).pop();
+            AppDialogs.showSnackBar(context: context, message: state.message);
+          }
+          if (state is SendingOtpError) {
+            Navigator.of(context).pop();
+            AppDialogs.showSnackBar(
+              context: context,
+              message: state.message,
+              isError: true,
+            );
           }
           if (state is ReSendingOtpError) {
             Navigator.of(context).pop();
@@ -72,11 +103,13 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             );
           }
           if (state is OtpVerified) {
+            Navigator.of(context).pop();
             Navigator.of(
               context,
             ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
           }
           if (state is VerifyingOtpError) {
+            Navigator.of(context).pop();
             AppDialogs.showSnackBar(
               context: context,
               message: state.message,
@@ -121,16 +154,28 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               MainButton(
                 text: 'Verify',
                 onPressed: () async {
+                  final otp = otpController.text.trim();
+                  final error = Validator.validateCode(otp);
+                  if (error != null) {
+                    AppDialogs.showSnackBar(
+                      context: context,
+                      message: error,
+                      isError: true,
+                    );
+                    return;
+                  }
                   await widget.authCubit.validateOtp(
                     email: widget.email ?? '',
-                    otp: otpController.text.trim(),
+                    otp: otp,
                   );
                 },
               ),
               SizedBox(height: size.height * 0.02),
               GestureDetector(
                 onTap: () async {
-                  await widget.authCubit.resendOtpForNewUser(widget.email ?? '');
+                  await widget.authCubit.resendOtpForNewUser(
+                    widget.email ?? '',
+                  );
                 },
                 child: Text.rich(
                   TextSpan(
