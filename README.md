@@ -52,12 +52,12 @@ This project showcases how to engineer an enterprise-level Flutter application t
 
 ### 🎬 Demo Video
 
-<video src="e-commerce.mp4" width="320" controls="controls">
+<video src="https://youtu.be/BHjsntM0HT0" width="320" controls="controls">
   Your browser does not support the video tag.
 </video>
 
 <p>
-  <a href="e-commerce.mp4">▶️ <b>Watch / Download Demo Video</b></a>
+  <a href="https://youtu.be/BHjsntM0HT0">▶️ <b>Watch / Download Demo Video</b></a>
 </p>
 
 <br />
