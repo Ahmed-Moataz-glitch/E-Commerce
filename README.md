@@ -18,6 +18,8 @@ A modern, production-grade **E-Commerce Mobile Application** built with **Flutte
 
 - [Overview](#-overview)
 - [App Showcase](#-app-showcase)
+  - [Demo Video](#-demo-video)
+  - [Screenshots](#-onboarding--welcome)
 - [Key Features](#-key-features)
 - [Architecture & Design](#-architecture--design)
 - [Project Directory Structure](#-project-directory-structure)
@@ -47,6 +49,18 @@ This project showcases how to engineer an enterprise-level Flutter application t
 ## 📱 App Showcase
 
 <div align="center">
+
+### 🎬 Demo Video
+
+<video src="e-commerce.mp4" width="320" controls="controls">
+  Your browser does not support the video tag.
+</video>
+
+<p>
+  <a href="e-commerce.mp4">▶️ <b>Watch / Download Demo Video</b></a>
+</p>
+
+<br />
 
 ### 🚀 Onboarding & Welcome
 | Splash Screen | Onboarding 1 | Onboarding 2 | Welcome Page |
